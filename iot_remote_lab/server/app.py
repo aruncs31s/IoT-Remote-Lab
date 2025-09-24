@@ -11,6 +11,7 @@ try:
 except ImportError:
     from ..core.device_manager.platformio.model import Device
     from ..core.device_manager.platformio.commands import get_devices as device_list
+    from ..core.device_manager.platformio.commands import get_mock_data
     from .exceptions import DeviceError, PlatformIOError
     from .config import get_config
     from .utils.logging_config import setup_logging, get_logger
@@ -21,6 +22,18 @@ logger = get_logger("app")
 
 app = Flask(__name__)
 app.config.from_object(config)
+
+# Serve static files in development
+if app.config.get("ENV") != "production":
+    from werkzeug.middleware.shared_data import SharedDataMiddleware
+    import os
+    app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
+        '/static': os.path.join(os.path.dirname(__file__), 'static')
+    })
+
+@app.route('/healthz')
+def healthz():
+    return jsonify({"ok": True}), 200
 
 @app.route('/')
 def home():
@@ -38,7 +51,8 @@ def home():
     
     except Exception as e:
         logger.error(f"Unexpected error on home page: {str(e)}")
-        return render_template('home_fixed.html', devices=[], error="Failed to load devices")
+        # Fall back to the main home template to avoid TemplateNotFound
+        return render_template('home.html', devices=[], error="Failed to load devices")
 @app.route('/new')
 def new_home():
     try:
@@ -54,13 +68,19 @@ def new_home():
     
     except Exception as e:
         logger.error(f"Unexpected error on home page: {str(e)}")
-        return render_template('home_new.html', devices=[], error="Failed to load devices")
+        # Fall back to the main home template to avoid TemplateNotFound
+        return render_template('home.html', devices=[], error="Failed to load devices")
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
     """Get list of connected devices"""
     try:
         logger.info("Requesting device list")
-        devices: list[Device] = device_list()
+        # Use real device list if available; otherwise fall back to mock
+        try:
+            devices: list[Device] = device_list()
+        except Exception:
+            logger.warning("Falling back to mock device data for /api/devices")
+            devices = get_mock_data()
         json_devices = [device.to_dict() for device in devices]
         
         logger.info(f"Returning {len(json_devices)} devices")
@@ -328,5 +348,3 @@ def main():
         port=config.PORT,
         debug=config.DEBUG
     )
-if __name__ == '__main__':
-    main()
