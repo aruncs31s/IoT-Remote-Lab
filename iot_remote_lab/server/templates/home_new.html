@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}IoT Remote Lab - ESP Devices | Catppuccin Theme{% endblock %}
+
+{% block extra_css %}
+/* Home page specific styles */
+.devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.device-card {
+    /* Inherits from .card base class */
+}
+
+.device-info h3 {
+    color: var(--ctp-text);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.device-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    background: linear-gradient(135deg, var(--ctp-blue), var(--ctp-sapphire));
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ctp-crust);
+    font-weight: bold;
+    font-size: 12px;
+}
+{% endblock %}
+
+{% block content %}
+    {% if error %}
+    <div class="alert-error">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="section-header">
+        <h2>Connected ESP Devices</h2>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <span class="count-badge">{{ devices|length }} device(s) found</span>
+            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+        </div>
+    </div>
+
+    {% if devices %}
+    <div class="devices-grid">
+        {% for device in devices %}
+        <div class="card device-card" onclick="selectDevice('{{ device.port }}', '{{ device.description }}', '{{ device.hwid }}')">
+            <div class="device-info">
+                <h3 class="card-title">
+                    <div class="device-icon card-icon">ESP</div>
+                    ESP Device
+                </h3>
+                <div class="device-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Port:</span>
+                        <span class="detail-value">{{ device.port }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Description:</span>
+                        <span class="detail-value">{{ device.description }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Hardware ID:</span>
+                        <span class="detail-value">{{ device.hwid }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="alert-success" id="selectedDeviceInfo">
+        <strong>Selected Device:</strong>
+        <div id="selectedDeviceDetails"></div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-primary" id="connectBtn" disabled onclick="connectToDevice()">
+            📡 Connect to Device
+        </button>
+        <button class="btn btn-secondary" id="monitorBtn" disabled onclick="monitorDevice()">
+            📊 Monitor Device
+        </button>
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🔌</div>
+        <h3>No ESP devices detected</h3>
+        <p>Make sure your ESP device is connected via USB and the drivers are installed.</p>
+        <p style="margin-top: 10px;">
+            <button class="refresh-btn" onclick="location.reload()">🔄 Try Again</button>
+        </p>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let selectedDevice = null;
+
+    function selectDevice(port, description, hwid) {
+        // Remove previous selection
+        document.querySelectorAll('.device-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+
+        // Add selection to clicked card
+        event.currentTarget.classList.add('selected');
+
+        // Store selected device data
+        selectedDevice = {
+            port: port,
+            description: description,
+            hwid: hwid
+        };
+
+        // Update selected device info
+        const infoDiv = document.getElementById('selectedDeviceInfo');
+        const detailsDiv = document.getElementById('selectedDeviceDetails');
+        
+        detailsDiv.innerHTML = `
+            <div style="margin-top: 10px;">
+                <strong>Port:</strong> ${port}<br>
+                <strong>Description:</strong> ${description}<br>
+                <strong>Hardware ID:</strong> ${hwid}
+            </div>
+        `;
+        
+        infoDiv.classList.add('show');
+
+        // Enable action buttons
+        document.getElementById('connectBtn').disabled = false;
+        document.getElementById('monitorBtn').disabled = false;
+    }
+
+    function connectToDevice() {
+        if (!selectedDevice) {
+            alert('Please select a device first');
+            return;
+        }
+
+        // You can implement the connection logic here
+        alert(`Connecting to device on port ${selectedDevice.port}...`);
+        
+        // Example: redirect to a device control page
+        // window.location.href = `/device/${selectedDevice.port}`;
+    }
+
+    function monitorDevice() {
+        if (!selectedDevice) {
+            alert('Please select a device first');
+            return;
+        }
+
+        // You can implement the monitoring logic here
+        alert(`Starting monitoring for device on port ${selectedDevice.port}...`);
+        
+        // Example: redirect to a monitoring page
+        // window.location.href = `/monitor/${selectedDevice.port}`;
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(() => {
+        if (!selectedDevice) {
+            location.reload();
+        }
+    }, 30000);
+</script>
+{% endblock %}

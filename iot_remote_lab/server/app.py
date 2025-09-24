@@ -3,7 +3,8 @@ from flask import Flask, jsonify, request, render_template
 # from controllers.platformio_helper.devices import Device
 try:
     from iot_remote_lab.core.device_manager.platformio.model import Device
-    from iot_remote_lab.core.device_manager.platformio.commands import get_devices as device_list
+    from iot_remote_lab.core.device_manager.platformio.commands import get_devices as device_list 
+    from iot_remote_lab.core.device_manager.platformio.commands import get_mock_data
     from exceptions import DeviceError, PlatformIOError
     from config import get_config
     from utils.logging_config import setup_logging, get_logger
@@ -26,7 +27,9 @@ def home():
     """Home page displaying ESP devices"""
     try:
         logger.info("Loading home page with device list")
-        devices: list[Device] = device_list()
+        # devices: list[Device] = device_list()
+        """For Now using mock data"""
+        devices: list[Device] = get_mock_data()
         return render_template('home.html', devices=devices)
     
     except (DeviceError, PlatformIOError) as e:

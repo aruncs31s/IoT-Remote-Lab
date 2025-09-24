@@ -30,7 +30,8 @@ def _get_devices() -> list[dict[str, str]]:
 def get_devices() -> list[Device]:
     devices: list[Device] = []
     output: list[dict[str, str]] = _get_devices()
-    
+    if output is None:
+        return get_mock_data()
     for device_data in output:
         try:
             # Extract device information from JSON data
@@ -51,7 +52,30 @@ def get_devices() -> list[Device]:
             continue
     
     return devices
-    
+
+
+def get_mock_data() -> list[Device]:
+    devices: list[Device] = []
+    device_1 = Device(
+        port="COM3",
+        description="USB Serial Device",
+        hwid="USB VID:PID=2341:0043 SER=12345 LOCATION",
+    )
+    device_2 = Device(
+        port="/dev/ttyUSB0",
+        description="FTDI USB Serial Device",
+        hwid="USB VID:PID=0403:6001 SER=67890 LOCATION",
+    ) 
+    device_3 = Device(
+        port="COM3",
+        description="USB Serial Device",
+        hwid="USB VID:PID=2341:0043 SER=12345 LOCATION",
+    )
+    devices.append(device_1)
+    devices.append(device_2)
+    devices.append(device_3)
+    return devices
+
 if __name__ == "__main__":
     output = get_devices()
     print("PlatformIO Device List Output:")
