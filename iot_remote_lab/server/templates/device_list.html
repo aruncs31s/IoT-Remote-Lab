@@ -6,27 +6,8 @@
 {% block page_subtitle %}Manage and Configure Your ESP Devices{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/device_list.css') }}">
-<style>
-.toggle-btn.active {
-    background: var(--ctp-mauve);
-    /* color: var(--ctp-crust); */
-    color: blue;
-    padding: 200px;
-}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/deviceList.css') }}">
 
-.toggle-btn:hover:not(.active) {
-    background: var(--ctp-surface1);
-    /* color: var(--ctp-text); */
-    color:blueviolet;
-}
-
-.toggle-btn.active:hover {
-    background: var(--ctp-mauve);
-    color: var(--ctp-crust);
-    opacity: 0.9;
-}
-</style>
 {% endblock %}
 
 {% block content %}

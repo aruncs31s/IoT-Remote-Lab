@@ -510,3 +510,18 @@ body {
         font-size: 2rem;
     }
 }
+.toggle-btn.active {
+    background: var(--ctp-mauve) !important;
+    color: var(--ctp-crust) !important;
+}
+
+.toggle-btn:hover:not(.active) {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+}
+
+.toggle-btn.active:hover {
+    background: var(--ctp-mauve) !important;
+    color: var(--ctp-crust) !important;
+    opacity: 0.9;
+}
