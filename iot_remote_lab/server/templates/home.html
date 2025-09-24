@@ -3,8 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IoT Remote Lab - ESP Devices</title>
+    <title>IoT Remote Lab - ESP Devices | Catppuccin Theme</title>
     <style>
+        /* Catppuccin Mocha Theme Variables */
+        :root {
+            --ctp-rosewater: #f5e0dc;
+            --ctp-flamingo: #f2cdcd;
+            --ctp-pink: #f5c2e7;
+            --ctp-mauve: #cba6f7;
+            --ctp-red: #f38ba8;
+            --ctp-maroon: #eba0ac;
+            --ctp-peach: #fab387;
+            --ctp-yellow: #f9e2af;
+            --ctp-green: #a6e3a1;
+            --ctp-teal: #94e2d5;
+            --ctp-sky: #89dceb;
+            --ctp-sapphire: #74c7ec;
+            --ctp-blue: #89b4fa;
+            --ctp-lavender: #b4befe;
+            --ctp-text: #cdd6f4;
+            --ctp-subtext1: #bac2de;
+            --ctp-subtext0: #a6adc8;
+            --ctp-overlay2: #9399b2;
+            --ctp-overlay1: #7f849c;
+            --ctp-overlay0: #6c7086;
+            --ctp-surface2: #585b70;
+            --ctp-surface1: #45475a;
+            --ctp-surface0: #313244;
+            --ctp-base: #1e1e2e;
+            --ctp-mantle: #181825;
+            --ctp-crust: #11111b;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,9 +43,10 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--ctp-base) 0%, var(--ctp-mantle) 50%, var(--ctp-crust) 100%);
             min-height: 100vh;
             padding: 20px;
+            color: var(--ctp-text);
         }
 
         .container {
@@ -26,25 +57,30 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-            color: white;
+            color: var(--ctp-text);
         }
 
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, var(--ctp-mauve), var(--ctp-blue), var(--ctp-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .header p {
             font-size: 1.1rem;
-            opacity: 0.9;
+            color: var(--ctp-subtext1);
         }
 
         .devices-section {
-            background: white;
+            background: var(--ctp-surface0);
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid var(--ctp-surface2);
         }
 
         .devices-header {
@@ -53,12 +89,17 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--ctp-surface2);
+        }
+
+        .devices-header h2 {
+            color: var(--ctp-text);
+            font-size: 1.5rem;
         }
 
         .devices-count {
-            background: #667eea;
-            color: white;
+            background: var(--ctp-mauve);
+            color: var(--ctp-crust);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
@@ -66,8 +107,8 @@
         }
 
         .refresh-btn {
-            background: #28a745;
-            color: white;
+            background: var(--ctp-green);
+            color: var(--ctp-crust);
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
@@ -78,7 +119,7 @@
         }
 
         .refresh-btn:hover {
-            background: #218838;
+            background: var(--ctp-teal);
             transform: translateY(-2px);
         }
 
@@ -89,7 +130,8 @@
         }
 
         .device-card {
-            border: 2px solid #e9ecef;
+            background: var(--ctp-surface1);
+            border: 2px solid var(--ctp-surface2);
             border-radius: 12px;
             padding: 20px;
             transition: all 0.3s ease;
@@ -99,14 +141,16 @@
         }
 
         .device-card:hover {
-            border-color: #667eea;
+            border-color: var(--ctp-mauve);
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(203, 166, 247, 0.2);
+            background: var(--ctp-surface2);
         }
 
         .device-card.selected {
-            border-color: #28a745;
-            background: linear-gradient(135deg, #f8fff9, #e8f5e8);
+            border-color: var(--ctp-green);
+            background: linear-gradient(135deg, var(--ctp-surface1), var(--ctp-surface0));
+            box-shadow: 0 0 20px rgba(166, 227, 161, 0.3);
         }
 
         .device-card.selected::before {
@@ -114,8 +158,8 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background: #28a745;
-            color: white;
+            background: var(--ctp-green);
+            color: var(--ctp-crust);
             width: 25px;
             height: 25px;
             border-radius: 50%;
@@ -127,7 +171,7 @@
         }
 
         .device-info h3 {
-            color: #2c3e50;
+            color: var(--ctp-text);
             margin-bottom: 15px;
             font-size: 1.2rem;
             display: flex;
@@ -138,26 +182,24 @@
             width: 24px;
             height: 24px;
             margin-right: 10px;
-            background: #667eea;
+            background: linear-gradient(135deg, var(--ctp-blue), var(--ctp-sapphire));
             border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--ctp-crust);
             font-weight: bold;
             font-size: 12px;
         }
 
-        .device-details {
-            space-y: 10px;
-        }
+
 
         .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 8px 0;
-            border-bottom: 1px solid #f8f9fa;
+            border-bottom: 1px solid var(--ctp-surface2);
         }
 
         .detail-row:last-child {
@@ -166,49 +208,56 @@
 
         .detail-label {
             font-weight: 600;
-            color: #6c757d;
+            color: var(--ctp-subtext1);
             font-size: 0.9rem;
         }
 
         .detail-value {
-            color: #2c3e50;
-            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            color: var(--ctp-text);
+            font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
             font-size: 0.85rem;
-            background: #f8f9fa;
+            background: var(--ctp-surface0);
             padding: 4px 8px;
             border-radius: 4px;
             max-width: 60%;
             word-break: break-all;
+            border: 1px solid var(--ctp-surface2);
         }
 
         .no-devices {
             text-align: center;
             padding: 60px 20px;
-            color: #6c757d;
+            color: var(--ctp-subtext0);
         }
 
         .no-devices-icon {
             font-size: 4rem;
             margin-bottom: 20px;
-            opacity: 0.5;
+            opacity: 0.7;
+            color: var(--ctp-overlay0);
+        }
+
+        .no-devices h3 {
+            color: var(--ctp-text);
+            margin-bottom: 10px;
         }
 
         .error-message {
-            background: #f8d7da;
-            color: #721c24;
+            background: var(--ctp-surface1);
+            color: var(--ctp-red);
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #dc3545;
+            border-left: 4px solid var(--ctp-red);
         }
 
         .selected-device-info {
-            background: #d4edda;
-            color: #155724;
+            background: var(--ctp-surface1);
+            color: var(--ctp-green);
             padding: 15px;
             border-radius: 8px;
             margin-top: 30px;
-            border-left: 4px solid #28a745;
+            border-left: 4px solid var(--ctp-green);
             display: none;
         }
 
@@ -236,30 +285,84 @@
         }
 
         .btn-primary {
-            background: #667eea;
-            color: white;
+            background: linear-gradient(135deg, var(--ctp-blue), var(--ctp-sapphire));
+            color: var(--ctp-crust);
         }
 
         .btn-primary:hover {
-            background: #5a67d8;
+            background: linear-gradient(135deg, var(--ctp-sapphire), var(--ctp-sky));
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(137, 180, 250, 0.4);
         }
 
         .btn-secondary {
-            background: #6c757d;
-            color: white;
+            background: var(--ctp-surface2);
+            color: var(--ctp-text);
+            border: 1px solid var(--ctp-overlay0);
         }
 
         .btn-secondary:hover {
-            background: #545b62;
+            background: var(--ctp-overlay0);
             transform: translateY(-2px);
         }
 
         .btn:disabled {
-            background: #e9ecef;
-            color: #6c757d;
+            background: var(--ctp-surface1);
+            color: var(--ctp-overlay0);
             cursor: not-allowed;
             transform: none;
+            border: 1px solid var(--ctp-surface2);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .device-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .device-card.selected {
+            animation: pulse 2s infinite;
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--ctp-surface0);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ctp-surface2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--ctp-overlay0);
         }
 
         @media (max-width: 768px) {
@@ -275,14 +378,18 @@
             .action-buttons {
                 flex-direction: column;
             }
+
+            .header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔧 IoT Remote Lab</h1>
-            <p>Manage and Control Your ESP Devices</p>
+            <h1>🌸 IoT Remote Lab</h1>
+            <p>Manage and Control Your ESP Devices with Catppuccin Style</p>
         </div>
 
         <div class="devices-section">
