@@ -6,129 +6,27 @@
 {% block page_subtitle %}Manage and Configure Your ESP Devices{% endblock %}
 
 {% block extra_css %}
-/* Device list specific styles */
-.device-status {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-connected {
-    background: var(--ctp-green);
-    color: var(--ctp-crust);
-}
-
-.status-disconnected {
-    background: var(--ctp-red);
-    color: var(--ctp-crust);
-}
-
-.status-unknown {
-    background: var(--ctp-yellow);
-    color: var(--ctp-crust);
-}
-
-.device-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.btn-small {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    border-radius: 6px;
-}
-
-.device-card {
-    position: relative;
-}
-
-.device-card .status-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 2px solid var(--ctp-surface0);
-}
-
-.status-indicator.connected {
-    background: var(--ctp-green);
-    box-shadow: 0 0 10px rgba(166, 227, 161, 0.6);
-}
-
-.status-indicator.disconnected {
-    background: var(--ctp-red);
-}
-
-.status-indicator.unknown {
-    background: var(--ctp-yellow);
-}
-
-.device-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: var(--ctp-surface1);
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.device-table th,
-.device-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--ctp-surface2);
-}
-
-.device-table th {
-    background: var(--ctp-surface2);
-    color: var(--ctp-text);
-    font-weight: 600;
-}
-
-.device-table td {
-    color: var(--ctp-subtext1);
-}
-
-.device-table tr:hover {
-    background: var(--ctp-surface0);
-}
-
-.device-table tr:last-child td {
-    border-bottom: none;
-}
-
-.view-toggle {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.toggle-btn {
-    background: var(--ctp-surface2);
-    color: var(--ctp-subtext1);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/device_list.css') }}">
+<style>
 .toggle-btn.active {
     background: var(--ctp-mauve);
-    color: var(--ctp-crust);
+    /* color: var(--ctp-crust); */
+    color: blue;
+    padding: 200px;
 }
 
-.toggle-btn:hover {
+.toggle-btn:hover:not(.active) {
     background: var(--ctp-surface1);
-    color: var(--ctp-text);
+    /* color: var(--ctp-text); */
+    color:blueviolet;
 }
+
+.toggle-btn.active:hover {
+    background: var(--ctp-mauve);
+    color: var(--ctp-crust);
+    opacity: 0.9;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -263,63 +161,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    // View switching functionality
-    function switchView(viewType) {
-        const cardView = document.getElementById('cardView');
-        const tableView = document.getElementById('tableView');
-        const cardViewBtn = document.getElementById('cardViewBtn');
-        const tableViewBtn = document.getElementById('tableViewBtn');
-
-        if (viewType === 'card') {
-            cardView.style.display = 'grid';
-            tableView.style.display = 'none';
-            cardViewBtn.classList.add('active');
-            tableViewBtn.classList.remove('active');
-        } else {
-            cardView.style.display = 'none';
-            tableView.style.display = 'block';
-            cardViewBtn.classList.remove('active');
-            tableViewBtn.classList.add('active');
-        }
-    }
-
-    // Device management functions
-    function connectDevice(port) {
-        console.log(`Connecting to device on port: ${port}`);
-        alert(`Connecting to device on port ${port}...`);
-        
-        // TODO: Implement actual connection logic
-        // Example: Send POST request to /api/devices/{port}/connect
-    }
-
-    function configureDevice(port) {
-        console.log(`Configuring device on port: ${port}`);
-        alert(`Opening configuration for device on port ${port}...`);
-        
-        // TODO: Implement configuration modal or redirect
-        // Example: window.location.href = `/device/${port}/config`;
-    }
-
-    function monitorDevice(port) {
-        console.log(`Monitoring device on port: ${port}`);
-        alert(`Starting monitoring for device on port ${port}...`);
-        
-        // TODO: Implement monitoring functionality
-        // Example: window.location.href = `/device/${port}/monitor`;
-    }
-
-    // Auto-refresh device status every 10 seconds
-    setInterval(() => {
-        // TODO: Implement status checking without full page reload
-        console.log('Checking device status...');
-    }, 10000);
-
-    // Initialize tooltips or additional functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Device list page loaded');
-        
-        // Add any initialization code here
-    });
-</script>
+<script src="{{ url_for('static', filename='js/device_list.js') }}"></script>
 {% endblock %}

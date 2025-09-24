@@ -1,0 +1,28 @@
+/* Home page specific styles */
+.devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.device-info h3 {
+    color: var(--ctp-text);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.device-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    background: linear-gradient(135deg, var(--ctp-blue), var(--ctp-sapphire));
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ctp-crust);
+    font-weight: bold;
+    font-size: 12px;
+}
