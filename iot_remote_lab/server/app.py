@@ -38,8 +38,23 @@ def home():
     
     except Exception as e:
         logger.error(f"Unexpected error on home page: {str(e)}")
-        return render_template('home.html', devices=[], error="Failed to load devices")
+        return render_template('home_fixed.html', devices=[], error="Failed to load devices")
+@app.route('/new')
+def new_home():
+    try:
+        logger.info("Loading home page with device list")
+        # devices: list[Device] = device_list()
+        """For Now using mock data"""
+        devices: list[Device] = get_mock_data()
+        return render_template('home.html', devices=devices)
 
+    except (DeviceError, PlatformIOError) as e:
+        logger.error(f"Device error on home page: {str(e)}")
+        return render_template('home.html', devices=[], error=str(e))
+    
+    except Exception as e:
+        logger.error(f"Unexpected error on home page: {str(e)}")
+        return render_template('home_new.html', devices=[], error="Failed to load devices")
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
     """Get list of connected devices"""
@@ -70,6 +85,35 @@ def get_devices():
             'error': 'Internal server error',
             'type': 'server_error'
         }), 500
+
+@app.route('/devices')
+def device_list_page():
+    """Device list page"""
+    try:
+        logger.info("Loading device list page")
+        # devices: list[Device] = device_list()
+        """For Now using mock data"""
+        devices: list[Device] = get_mock_data()
+        return render_template('device_list.html', devices=devices)
+    
+    except (DeviceError, PlatformIOError) as e:
+        logger.error(f"Device error on device list page: {str(e)}")
+        return render_template('device_list.html', devices=[], error=str(e))
+    
+    except Exception as e:
+        logger.error(f"Unexpected error on device list page: {str(e)}")
+        return render_template('device_list.html', devices=[], error="Failed to load devices")
+
+@app.route('/simulator')
+def simulator():
+    """ESP device simulator page"""
+    try:
+        logger.info("Loading simulator page")
+        return render_template('simulator.html')
+    
+    except Exception as e:
+        logger.error(f"Unexpected error on simulator page: {str(e)}")
+        return render_template('simulator.html', error="Failed to load simulator")
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
