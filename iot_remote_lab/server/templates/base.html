@@ -1,43 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}IoT Remote Lab{% endblock %}</title>
+    <title>{% block title %}IoT Remote Lab 1{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    {% block extra_css %}
+    {% endblock %}
     <style>
-            
-    /* Footer Styles */
-    .footer {
-        background: var(--ctp-mantle);
-        color: var(--ctp-text);
-        padding: 20px 0;
-        text-align: center;
-        margin-top: 40px;
-        border-top: 1px solid var(--ctp-surface0);
-    }
-
-    .footer-content p {
-        text-align: center;
-        margin: 5px 0;
-        font-size: 1rem;
-    }
-
-    .footer-content a {
-        color: var(--ctp-blue);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .footer-content a:hover {
-        color: var(--ctp-mauve);
-        text-decoration: underline;
-    }
+        /* Footer Styles */
+        
+        .footer {
+            background: var(--ctp-mantle);
+            color: var(--ctp-text);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+            border-top: 1px solid var(--ctp-surface0);
+        }
+        
+        .footer-content p {
+            text-align: center;
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+        
+        .footer-content a {
+            color: var(--ctp-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-content a:hover {
+            color: var(--ctp-mauve);
+            text-decoration: underline;
+        }
     </style>
 
     {% block extra_head %}{% endblock %}
 </head>
+
 <body>
     <div class="container">
         <!-- Navigation Bar -->
@@ -45,42 +51,42 @@
             <div class="nav-container">
                 <a href="{{ url_for('home') }}" class="nav-brand">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon">
-                    <!-- <span class="nav-brand-icon">🌸</span> -->
                     IoT Remote Lab
                 </a>
-                
+
                 <ul class="nav-menu" id="nav-menu">
                     <li class="nav-item">
                         <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">
-                            🏠 Home
+                            <i class="fa-solid fa-house-chimney"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ url_for('device_list_page') }}" class="nav-link {% if request.endpoint == 'device_list_page' %}active{% endif %}">
-                            📱 Device List
+                            <i class="fa-solid fa-mobile"></i> Device List
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ url_for('simulator') }}" class="nav-link {% if request.endpoint == 'simulator' %}active{% endif %}">
-                            🔬 Simulator
+                            <i class="fa-solid fa-code-commit"></i> Simulator
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ url_for('programmer') }}" class="nav-link {% if request.endpoint == 'programmer' %}active{% endif %}">
-                            💻 Programmer
+                            <i class="fa-solid fa-code"></i> Programmer
                         </a>
                     </li>
                 </ul>
-                
+
                 <button class="nav-toggle" id="nav-toggle">
-                    ☰
+                    <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </nav>
 
         <div class="header">
-            <h1>{% block page_title %}🌸 IoT Remote Lab{% endblock %}</h1>
-            <p>{% block page_subtitle %}Manage and Control Your ESP Devices with Catppuccin Style{% endblock %}</p>
+            <h1>{% block page_title %}<img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon">
+ IoT Remote Lab{% endblock %}</h1>
+            <p>{% block page_subtitle %}IoT Remote Lab{% endblock %}</p>
         </div>
 
         <div class="main-content">
@@ -102,18 +108,18 @@
     </footer>
 
     {% block scripts %}{% endblock %}
-    
+
     <!-- Navigation Toggle Script -->
     <script>
         // Mobile navigation toggle
         const navToggle = document.getElementById('nav-toggle');
         const navMenu = document.getElementById('nav-menu');
-        
+
         if (navToggle && navMenu) {
             navToggle.addEventListener('click', () => {
                 navMenu.classList.toggle('active');
             });
-            
+
             // Close mobile menu when clicking outside
             document.addEventListener('click', (e) => {
                 if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {

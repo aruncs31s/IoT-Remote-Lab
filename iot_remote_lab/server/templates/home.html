@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}IoT Remote Lab - ESP Devices | Catppuccin Theme{% endblock %}
+{% block title %}IoT Remote Lab{% endblock %}
+
+{% block page_title %} <i class="fa-solid fa-house-chimney"></i> IoT Remote Lab{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
+
+
 
 {% block content %}
     {% if error %}
@@ -17,7 +21,11 @@
         <h2>Connected ESP Devices</h2>
         <div style="display: flex; gap: 15px; align-items: center;">
             <span class="count-badge">{{ devices|length }} device(s) found</span>
-            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+            <button class="refresh-btn" onclick="location.reload()">
+                <i class="fa-solid fa-arrows-rotate">
+                </i>
+                Refresh
+            </button>
         </div>
     </div>
 

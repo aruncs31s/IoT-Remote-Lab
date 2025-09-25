@@ -2,13 +2,11 @@
 
 {% block title %}Device List - IoT Remote Lab{% endblock %}
 
-{% block page_title %}📱 Device Management{% endblock %}
+{% block page_title %}<i class="fa-solid fa-mobile"></i>Device Management{% endblock %}
 {% block page_subtitle %}Manage and Configure Your ESP Devices{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/deviceList.css') }}">
-
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/deviceList.css') }}"> {% endblock %}
 
 {% block content %}
     {% if error %}
