@@ -24,7 +24,7 @@ const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     extraKeys: {
         "Ctrl-Space": "autocomplete",
-        "Ctrl-S": function(cm) {
+        "Ctrl-S": function (cm) {
             saveProgram();
         }
     },
@@ -160,15 +160,15 @@ function displayPrograms(programs) {
     }
 
     programs.forEach(program => {
-                const programCard = document.createElement('div');
-                programCard.className = 'program-card';
-                programCard.onclick = () => loadProgram(program.name);
+        const programCard = document.createElement('div');
+        programCard.className = 'program-card';
+        programCard.onclick = () => loadProgram(program.name);
 
-                const createdDate = program.created_at ?
-                    new Date(program.created_at).toLocaleDateString() :
-                    'Unknown date';
+        const createdDate = program.created_at ?
+            new Date(program.created_at).toLocaleDateString() :
+            'Unknown date';
 
-                programCard.innerHTML = `
+        programCard.innerHTML = `
             <h4>📄 ${program.name}</h4>
             <div class="program-date">Created: ${createdDate}</div>
             ${program.description ? `<div class="program-description">${program.description}</div>` : ''}
@@ -238,18 +238,19 @@ function displayDevices(devices) {
         deviceItem.className = 'device-item';
         deviceItem.onclick = () => selectDevice(device, deviceItem);
 
-        const statusClass = device.connected ? 'connected' : 'disconnected';
-        const statusText = device.connected ? 'Connected' : 'Disconnected';
+        // Use the actual device status from the enum, fallback to 'unknown'
+        const statusClass = device.status || 'unknown';
         const deviceIcon = getDeviceIcon(device.type);
 
         deviceItem.innerHTML = `
-            <i class="fa-solid ${deviceIcon}" style="font-size: 1.5rem; color: var(--ctp-mauve);"></i>
+            <!-- <i class="fa-solid ${deviceIcon}" style="font-size: 1.5rem; color: var(--ctp-mauve);"></i> -->
+            <i class="fa-solid fa-microchip"></i>
             <div class="device-info">
-                <div class="device-name">${device.name || device.type}</div>
-                <div class="device-port">${device.port}</div>
+                <div class="device-name">${device.name || device.type || 'Unknown Device'}</div>
+                <div class="device-port">${device.port || 'Unknown Port'}</div>
             </div>
-            <div class="device-status ${statusClass}">
-                ${statusText}
+            <div class="device-status status-${statusClass}">
+                ${getStatusDisplayText(statusClass)}
             </div>
         `;
 
@@ -265,13 +266,25 @@ function getDeviceIcon(deviceType) {
         'raspberry-pi': 'fa-raspberry-pi',
         'unknown': 'fa-usb'
     };
-    
+
     // Handle undefined, null, or non-string deviceType
     if (!deviceType || typeof deviceType !== 'string') {
         return icons['unknown'];
     }
-    
+
     return icons[deviceType.toLowerCase()] || icons['unknown'];
+}
+
+function getStatusDisplayText(status) {
+    const statusTexts = {
+        'connected': '<i class="fa-solid fa-check-circle"></i> Available',
+        'disconnected': '<i class="fa-solid fa-times-circle"></i> Offline',
+        'unknown': '<i class="fa-solid fa-question-circle"></i> Unknown',
+        'busy': '<i class="fa-solid fa-clock"></i> Busy',
+        'monitoring': '<i class="fa-solid fa-chart-line"></i> Monitoring'
+    };
+
+    return statusTexts[status] || '<i class="fa-solid fa-question-circle"></i> Unknown';
 }
 
 function selectDevice(device, deviceElement) {
@@ -312,7 +325,7 @@ async function uploadToDevice() {
     showStatus('Uploading to device...', 'info');
 
     try {
-        const response = await fetch('/api/upload', {
+        const response = await fetch('/api/upload_firmware', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -328,7 +341,7 @@ async function uploadToDevice() {
         const data = await response.json();
 
         if (data.success) {
-            showStatus(`Successfully uploaded to ${selectedDevice.name}`, 'success');
+            // showStatus(`Successfully uploaded to ${selectedDevice.name}`, 'success');
 
             // Open serial monitor if requested
             if (monitorSerial.checked && data.monitor_url) {

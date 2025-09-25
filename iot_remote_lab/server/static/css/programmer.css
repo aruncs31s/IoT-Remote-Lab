@@ -360,14 +360,52 @@
     font-weight: 600;
 }
 
+
+/* Device Status Styles - Based on DeviceState Enum */
+
+.device-status.status-connected {
+    background: rgba(166, 227, 161, 0.2);
+    color: var(--ctp-green);
+    border: 1px solid var(--ctp-green);
+}
+
+.device-status.status-disconnected {
+    background: rgba(243, 139, 168, 0.2);
+    color: var(--ctp-red);
+    border: 1px solid var(--ctp-red);
+}
+
+.device-status.status-unknown {
+    background: rgba(186, 194, 222, 0.2);
+    color: var(--ctp-subtext1);
+    border: 1px solid var(--ctp-subtext1);
+}
+
+.device-status.status-busy {
+    background: rgba(250, 179, 135, 0.2);
+    color: var(--ctp-peach);
+    border: 1px solid var(--ctp-peach);
+}
+
+.device-status.status-monitoring {
+    background: rgba(116, 199, 236, 0.2);
+    color: var(--ctp-sky);
+    border: 1px solid var(--ctp-sky);
+}
+
+
+/* Legacy support for old class names */
+
 .device-status.connected {
     background: rgba(166, 227, 161, 0.2);
     color: var(--ctp-green);
+    border: 1px solid var(--ctp-green);
 }
 
 .device-status.disconnected {
     background: rgba(243, 139, 168, 0.2);
     color: var(--ctp-red);
+    border: 1px solid var(--ctp-red);
 }
 
 .upload-options {

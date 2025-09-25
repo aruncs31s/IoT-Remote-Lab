@@ -1,129 +1,130 @@
 /* Device list specific styles */
 .device-status {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .status-connected {
-    background: var(--ctp-green);
-    color: var(--ctp-crust);
+  /* text-transform: uppercase; */
+  background: var(--ctp-green);
+  color: var(--ctp-crust);
 }
 
 .status-disconnected {
-    background: var(--ctp-red);
-    color: var(--ctp-crust);
+  background: var(--ctp-red);
+  color: var(--ctp-crust);
 }
 
 .status-unknown {
-    background: var(--ctp-yellow);
-    color: var(--ctp-crust);
+  background: var(--ctp-yellow);
+  color: var(--ctp-crust);
 }
 
 .device-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 15px;
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
 }
 
 .btn-small {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 6px;
 }
 
 .device-card {
-    position: relative;
+  position: relative;
 }
 
 .device-card .status-indicator {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 2px solid var(--ctp-surface0);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--ctp-surface0);
 }
 
 .status-indicator.connected {
-    background: var(--ctp-green);
-    box-shadow: 0 0 10px rgba(166, 227, 161, 0.6);
+  background: var(--ctp-green);
+  box-shadow: 0 0 10px rgba(166, 227, 161, 0.6);
 }
 
 .status-indicator.disconnected {
-    background: var(--ctp-red);
+  background: var(--ctp-red);
 }
 
 .status-indicator.unknown {
-    background: var(--ctp-yellow);
+  background: var(--ctp-yellow);
 }
 
 .device-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: var(--ctp-surface1);
-    border-radius: 12px;
-    overflow: hidden;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: var(--ctp-surface1);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .device-table th,
 .device-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--ctp-surface2);
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--ctp-surface2);
 }
 
 .device-table th {
-    background: var(--ctp-surface2);
-    color: var(--ctp-text);
-    font-weight: 600;
+  background: var(--ctp-surface2);
+  color: var(--ctp-text);
+  font-weight: 600;
 }
 
 .device-table td {
-    color: var(--ctp-subtext1);
+  color: var(--ctp-subtext1);
 }
 
 .device-table tr:hover {
-    background: var(--ctp-surface0);
+  background: var(--ctp-surface0);
 }
 
 .device-table tr:last-child td {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .view-toggle {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .toggle-btn {
-    background: var(--ctp-surface2);
-    color: var(--ctp-subtext1);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  background: var(--ctp-surface2);
+  color: var(--ctp-subtext1);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .toggle-btn.active {
-    background: var(--ctp-mauve) !important;
-    color: var(--ctp-crust) !important;
+  background: var(--ctp-mauve) !important;
+  color: var(--ctp-crust) !important;
 }
 
 .toggle-btn:hover:not(.active) {
-    background: var(--ctp-surface1) !important;
-    color: var(--ctp-text) !important;
+  background: var(--ctp-surface1) !important;
+  color: var(--ctp-text) !important;
 }
 
 .toggle-btn.active:hover {
-    background: var(--ctp-mauve) !important;
-    color: var(--ctp-crust) !important;
-    opacity: 0.9;
+  background: var(--ctp-mauve) !important;
+  color: var(--ctp-crust) !important;
+  opacity: 0.9;
 }

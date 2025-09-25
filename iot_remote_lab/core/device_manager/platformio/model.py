@@ -58,7 +58,13 @@ class Device:
         self._hwid = value
 
     def to_dict(self) -> dict:
-        return {"port": self.port, "description": self.description, "hwid": self.hwid}
+        return {
+            "port": self.port,
+            "description": self.description,
+            "hwid": self.hwid,
+            "name": "ESP8266",
+            "status": self.status.value,
+        }
 
     def __repr__(self):
         return f"Device(port={self.port}, description={self.description}, hwid={self.hwid})"

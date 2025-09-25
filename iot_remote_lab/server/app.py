@@ -268,40 +268,17 @@ def health_check():
 @app.route("/api/upload_firmware", methods=["POST"])
 def upload_firmware():
     """Upload firmware to a device"""
-    try:
-        data = request.get_json()
-        device_id = data.get("device_id")
-        firmware_data = data.get("firmware_data")
-
-        if not device_id or not firmware_data:
-            return (
-                jsonify(
-                    {
-                        "success": False,
-                        "error": "device_id and firmware_data are required",
-                    }
-                ),
-                400,
-            )
-
-        logger.info(f"Uploading firmware to device {device_id}")
-        # Simulate firmware upload
-        # In real implementation, interact with DeviceManager or similar
-        # For now, just log and return success
-        logger.info(f"Firmware uploaded to device {device_id} successfully")
-
-        return jsonify(
-            {"success": True, "message": f"Firmware uploaded to device {device_id}"}
-        )
-
-    except Exception as e:
-        logger.error(f"Error uploading firmware: {str(e)}")
-        return (
-            jsonify(
-                {"success": False, "error": f"Failed to upload firmware: {str(e)}"}
-            ),
-            500,
-        )
+    # try:
+    data = request.get_json()
+    device_id = data.get("device")
+    program_name = data.get("program_name")
+    print(f"Received upload request for device {device_id} with program {program_name}")
+    return jsonify(
+        {
+            "success": True,
+            "message": f"Firmware upload to device {device_id} with program {program_name} initiated",
+        }
+    )
 
 
 @app.errorhandler(404)
