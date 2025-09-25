@@ -19,17 +19,17 @@
         <h2>Device List</h2>
         <div style="display: flex; gap: 15px; align-items: center;">
             <span class="count-badge">{{ devices|length }} device(s) found</span>
-            <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+            <button class="refresh-btn" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Refresh</button>
         </div>
     </div>
 
     <!-- View Toggle -->
     <div class="view-toggle">
         <button class="toggle-btn active" id="cardViewBtn" onclick="switchView('card')">
-            🎴 Card View
+            <i class="fa-solid fa-credit-card"></i> Card View
         </button>
         <button class="toggle-btn" id="tableViewBtn" onclick="switchView('table')">
-            📋 Table View
+            <i class="fa-solid fa-table-list"></i> Table View
         </button>
     </div>
 
@@ -68,13 +68,13 @@
             
             <div class="device-actions">
                 <button class="btn btn-primary btn-small" onclick="connectDevice('{{ device.port }}')">
-                    📡 Connect
+                    <i class="fa-solid fa-plug"></i> Connect
                 </button>
                 <button class="btn btn-secondary btn-small" onclick="configureDevice('{{ device.port }}')">
-                    ⚙️ Configure
+                    <i class="fa-solid fa-gear"></i> Configure
                 </button>
                 <button class="btn btn-secondary btn-small" onclick="monitorDevice('{{ device.port }}')">
-                    📊 Monitor
+                    <i class="fa-solid fa-desktop"></i> Monitor
                 </button>
             </div>
         </div>
@@ -109,10 +109,10 @@
                     <td>
                         <div class="device-actions">
                             <button class="btn btn-primary btn-small" onclick="connectDevice('{{ device.port }}')">
-                                📡 Connect
+                                <i class="fa-solid fa-satellite-dish"></i> Connect
                             </button>
                             <button class="btn btn-secondary btn-small" onclick="configureDevice('{{ device.port }}')">
-                                ⚙️ Configure
+                                <i class="fa-solid fa-gear"></i> Configure
                             </button>
                         </div>
                     </td>

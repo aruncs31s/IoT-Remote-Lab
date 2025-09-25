@@ -1,9 +1,13 @@
 import json
 import logging
 import os
+import subprocess
 from datetime import datetime
 
 from flask import jsonify, request
+
+PROGRAMS_DIR = "programs"
+TEMPLATE_DIR = os.path.join(PROGRAMS_DIR, "template")
 
 
 def load_program_from_file(logger: logging.Logger, program_name: str) -> jsonify:
@@ -50,7 +54,7 @@ def load_program_from_file(logger: logging.Logger, program_name: str) -> jsonify
 
 
 def save_program_to_file(logger: logging.Logger) -> jsonify:
-    """Save C++ program to file system"""
+    """Save Arduino program to file system"""
     try:
         data = request.get_json()
         program_name = data.get("program_name", "").strip()
@@ -63,7 +67,8 @@ def save_program_to_file(logger: logging.Logger) -> jsonify:
             return jsonify({"success": False, "error": "Code cannot be empty"}), 400
 
         # Create programs directory if it doesn't exist
-        programs_dir = os.path.join(os.getcwd(), "programs")
+        programs_dir = os.path.join(os.getcwd(), PROGRAMS_DIR)
+
         if not os.path.exists(programs_dir):
             os.makedirs(programs_dir)
 
@@ -73,7 +78,15 @@ def save_program_to_file(logger: logging.Logger) -> jsonify:
             os.makedirs(program_folder)
 
         # Save main.cpp file
-        cpp_file_path = os.path.join(program_folder, "main.cpp")
+        cpp_file_path = os.path.join(program_folder, "src/main.cpp")
+
+        # 1. Copy the template dir structure
+
+        template_dir = os.path.join(os.getcwd(), TEMPLATE_DIR)
+
+        if not os.path.exists(cpp_file_path):
+            os.system("mkdir -p " + os.path.dirname(cpp_file_path))
+            os.system(f"cp -r {template_dir}/* {program_folder}")
         with open(cpp_file_path, "w", encoding="utf-8") as f:
             f.write(code)
 

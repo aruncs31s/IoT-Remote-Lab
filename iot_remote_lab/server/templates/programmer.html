@@ -20,6 +20,9 @@
                 <button class="btn btn-primary" id="save-btn">
                     <i class="fa-solid fa-sd-card"></i> Save Program
                 </button>
+                <button class="btn btn-primary" id="upload-btn">
+                    <i class="fa-solid fa-upload"></i> Upload
+                </button>
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
                     <span>Saving...</span>
@@ -52,6 +55,50 @@
         </div>
     </div>
 </div>
+
+<!-- Device Selection Modal -->
+<div id="device-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-microchip"></i> Select Device</h3>
+            <span class="close-modal" id="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="device-selection">
+                <p>Choose a device to upload your code:</p>
+                <div class="devices-list" id="devices-list">
+                    <div class="loading-devices">
+                        <div class="spinner"></div>
+                        <span>Loading devices...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="upload-options">
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" id="monitor-serial" checked>
+                        <i class="fa-solid fa-terminal"></i> Open Serial Monitor after upload
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" id="save-before-upload" checked>
+                        <i class="fa-solid fa-sd-card"></i> Save program before upload
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancel-upload">
+                <i class="fa-solid fa-times"></i> Cancel
+            </button>
+            <button class="btn btn-primary" id="confirm-upload" disabled>
+                <i class="fa-solid fa-upload"></i> Upload to Device
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endblock %} {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/clike/clike.min.js"></script>

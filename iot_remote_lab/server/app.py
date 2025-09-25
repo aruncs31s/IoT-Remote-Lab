@@ -8,14 +8,11 @@ try:
     from utils.logging_config import get_logger, setup_logging
 
     from iot_remote_lab.core.device_manager.platformio.commands import \
-        get_devices as device_list
-    from iot_remote_lab.core.device_manager.platformio.commands import \
-        get_mock_data
-    from iot_remote_lab.core.device_manager.platformio.model import Device
+        DeviceManager
+    from iot_remote_lab.core.device_manager.platformio.model import (
+        Device, DeviceState)
 except ImportError:
-    from ..core.device_manager.platformio.commands import \
-        get_devices as device_list
-    from ..core.device_manager.platformio.commands import get_mock_data
+    from ..core.device_manager.platformio.commands import DeviceManager
     from ..core.device_manager.platformio.model import Device
     from .config import get_config
     from .exceptions import DeviceError, PlatformIOError
@@ -36,6 +33,9 @@ logger = get_logger("app")
 
 app = Flask(__name__)
 app.config.from_object(config)
+
+# Singleton DeviceManager instance
+dmg = DeviceManager()
 
 # Serve static files in development
 if app.config.get("ENV") != "production":
@@ -60,7 +60,7 @@ def home():
         logger.info("Loading home page with device list")
         # devices: list[Device] = device_list()
         """For Now using mock data"""
-        devices: list[Device] = get_mock_data()
+        devices: list[Device] = dmg.get_mock_data()
         return render_template("home.html", devices=devices)
 
     except (DeviceError, PlatformIOError) as e:
@@ -79,7 +79,7 @@ def new_home():
         logger.info("Loading home page with device list")
         # devices: list[Device] = device_list()
         """For Now using mock data"""
-        devices: list[Device] = get_mock_data()
+        devices: list[Device] = dmg.get_mock_data()
         return render_template("home.html", devices=devices)
 
     except (DeviceError, PlatformIOError) as e:
@@ -99,10 +99,10 @@ def get_devices():
         logger.info("Requesting device list")
         # Use real device list if available; otherwise fall back to mock
         try:
-            devices: list[Device] = device_list()
+            devices: list[Device] = dmg.get_devices()
         except Exception:
             logger.warning("Falling back to mock device data for /api/devices")
-            devices = get_mock_data()
+            devices = dmg.get_mock_data()
         json_devices = [device.to_dict() for device in devices]
 
         logger.info(f"Returning {len(json_devices)} devices")
@@ -135,7 +135,7 @@ def device_list_page():
         logger.info("Loading device list page")
         # devices: list[Device] = device_list()
         """For Now using mock data"""
-        devices: list[Device] = get_mock_data()
+        devices: list[Device] = dmg.get_mock_data()
         return render_template("device_list.html", devices=devices)
 
     except (DeviceError, PlatformIOError) as e:
@@ -258,6 +258,45 @@ def health_check():
             "message": "IoT Remote Lab server is running",
         }
     )
+
+
+@app.route("/api/upload_firmware", methods=["POST"])
+def upload_firmware():
+    """Upload firmware to a device"""
+    try:
+        data = request.get_json()
+        device_id = data.get("device_id")
+        firmware_data = data.get("firmware_data")
+
+        if not device_id or not firmware_data:
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "error": "device_id and firmware_data are required",
+                    }
+                ),
+                400,
+            )
+
+        logger.info(f"Uploading firmware to device {device_id}")
+        # Simulate firmware upload
+        # In real implementation, interact with DeviceManager or similar
+        # For now, just log and return success
+        logger.info(f"Firmware uploaded to device {device_id} successfully")
+
+        return jsonify(
+            {"success": True, "message": f"Firmware uploaded to device {device_id}"}
+        )
+
+    except Exception as e:
+        logger.error(f"Error uploading firmware: {str(e)}")
+        return (
+            jsonify(
+                {"success": False, "error": f"Failed to upload firmware: {str(e)}"}
+            ),
+            500,
+        )
 
 
 @app.errorhandler(404)

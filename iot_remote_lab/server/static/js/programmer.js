@@ -35,10 +35,22 @@ const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
 const programNameInput = document.getElementById('program-name');
 const saveBtn = document.getElementById('save-btn');
 const loadBtn = document.getElementById('load-btn');
+const uploadBtn = document.getElementById('upload-btn');
 const loading = document.getElementById('loading');
 const statusMessage = document.getElementById('status-message');
 const statusText = document.getElementById('status-text');
 const programsGrid = document.getElementById('programs-grid');
+
+// Modal elements
+const deviceModal = document.getElementById('device-modal');
+const closeModal = document.getElementById('close-modal');
+const devicesList = document.getElementById('devices-list');
+const confirmUpload = document.getElementById('confirm-upload');
+const cancelUpload = document.getElementById('cancel-upload');
+const monitorSerial = document.getElementById('monitor-serial');
+const saveBeforeUpload = document.getElementById('save-before-upload');
+
+let selectedDevice = null;
 
 // Show status message
 function showStatus(message, type = 'success') {
@@ -148,15 +160,15 @@ function displayPrograms(programs) {
     }
 
     programs.forEach(program => {
-        const programCard = document.createElement('div');
-        programCard.className = 'program-card';
-        programCard.onclick = () => loadProgram(program.name);
+                const programCard = document.createElement('div');
+                programCard.className = 'program-card';
+                programCard.onclick = () => loadProgram(program.name);
 
-        const createdDate = program.created_at 
-            ? new Date(program.created_at).toLocaleDateString()
-            : 'Unknown date';
+                const createdDate = program.created_at ?
+                    new Date(program.created_at).toLocaleDateString() :
+                    'Unknown date';
 
-        programCard.innerHTML = `
+                programCard.innerHTML = `
             <h4>📄 ${program.name}</h4>
             <div class="program-date">Created: ${createdDate}</div>
             ${program.description ? `<div class="program-description">${program.description}</div>` : ''}
@@ -166,7 +178,179 @@ function displayPrograms(programs) {
     });
 }
 
+// Modal functions
+function openDeviceModal() {
+    deviceModal.classList.add('show');
+    loadAvailableDevices();
+}
+
+function closeDeviceModal() {
+    deviceModal.classList.remove('show');
+    selectedDevice = null;
+    confirmUpload.disabled = true;
+}
+
+async function loadAvailableDevices() {
+    try {
+        devicesList.innerHTML = `
+            <div class="loading-devices">
+                <div class="spinner"></div>
+                <span>Loading devices...</span>
+            </div>
+        `;
+
+        const response = await fetch('/api/devices');
+        const data = await response.json();
+
+        if (data.success && data.devices.length > 0) {
+            displayDevices(data.devices);
+        } else {
+            devicesList.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--ctp-subtext1);">
+                    <i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>No devices found</p>
+                    <p style="font-size: 0.9rem;">Make sure your device is connected and try again.</p>
+                    <button class="btn btn-secondary" onclick="loadAvailableDevices()" style="margin-top: 1rem;">
+                        <i class="fa-solid fa-refresh"></i> Refresh
+                    </button>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading devices:', error);
+        devicesList.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: var(--ctp-red);">
+                <i class="fa-solid fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <p>Failed to load devices</p>
+                <p style="font-size: 0.9rem;">Check your connection and try again.</p>
+                <button class="btn btn-secondary" onclick="loadAvailableDevices()" style="margin-top: 1rem;">
+                    <i class="fa-solid fa-refresh"></i> Retry
+                </button>
+            </div>
+        `;
+    }
+}
+
+function displayDevices(devices) {
+    devicesList.innerHTML = '';
+    
+    devices.forEach(device => {
+        const deviceItem = document.createElement('div');
+        deviceItem.className = 'device-item';
+        deviceItem.onclick = () => selectDevice(device, deviceItem);
+        
+        const statusClass = device.connected ? 'connected' : 'disconnected';
+        const statusText = device.connected ? 'Connected' : 'Disconnected';
+        const deviceIcon = getDeviceIcon(device.type);
+        
+        deviceItem.innerHTML = `
+            <i class="fa-solid ${deviceIcon}" style="font-size: 1.5rem; color: var(--ctp-mauve);"></i>
+            <div class="device-info">
+                <div class="device-name">${device.name || device.type}</div>
+                <div class="device-port">${device.port}</div>
+            </div>
+            <div class="device-status ${statusClass}">
+                ${statusText}
+            </div>
+        `;
+        
+        devicesList.appendChild(deviceItem);
+    });
+}
+
+function getDeviceIcon(deviceType) {
+    const icons = {
+        'arduino': 'fa-microchip',
+        'esp32': 'fa-wifi',
+        'esp8266': 'fa-wifi',
+        'raspberry-pi': 'fa-raspberry-pi',
+        'unknown': 'fa-usb'
+    };
+    return icons[deviceType.toLowerCase()] || icons['unknown'];
+}
+
+function selectDevice(device, deviceElement) {
+    // Remove selection from all devices
+    document.querySelectorAll('.device-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Select current device
+    deviceElement.classList.add('selected');
+    selectedDevice = device;
+    confirmUpload.disabled = false;
+}
+
+async function uploadToDevice() {
+    if (!selectedDevice) {
+        showStatus('Please select a device first', 'error');
+        return;
+    }
+
+    const code = editor.getValue();
+    const programName = programNameInput.value.trim();
+
+    if (!code.trim()) {
+        showStatus('Please write some code before uploading', 'error');
+        return;
+    }
+
+    // Save program first if option is checked
+    if (saveBeforeUpload.checked && programName) {
+        await saveProgram();
+    }
+
+    // Close modal and show upload progress
+    closeDeviceModal();
+    
+    // Show upload status
+    showStatus('Uploading to device...', 'info');
+    
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                code: code,
+                device: selectedDevice,
+                program_name: programName || 'untitled',
+                monitor_serial: monitorSerial.checked
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showStatus(`Successfully uploaded to ${selectedDevice.name}`, 'success');
+            
+            // Open serial monitor if requested
+            if (monitorSerial.checked && data.monitor_url) {
+                window.open(data.monitor_url, '_blank');
+            }
+        } else {
+            showStatus(data.error || 'Failed to upload to device', 'error');
+        }
+    } catch (error) {
+        console.error('Error uploading:', error);
+        showStatus('Network error: Failed to upload to device', 'error');
+    }
+}
+
 // Event listeners
+uploadBtn.addEventListener('click', openDeviceModal);
+closeModal.addEventListener('click', closeDeviceModal);
+cancelUpload.addEventListener('click', closeDeviceModal);
+confirmUpload.addEventListener('click', uploadToDevice);
+
+// Close modal when clicking outside
+deviceModal.addEventListener('click', (e) => {
+    if (e.target === deviceModal) {
+        closeDeviceModal();
+    }
+});
+
 saveBtn.addEventListener('click', saveProgram);
 
 // Load programs on page load

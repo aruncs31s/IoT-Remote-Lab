@@ -22,7 +22,7 @@ function switchView(viewType) {
 function connectDevice(port) {
     console.log(`Connecting to device on port: ${port}`);
     alert(`Connecting to device on port ${port}...`);
-    
+
     // TODO: Implement actual connection logic
     // Example: Send POST request to /api/devices/{port}/connect
 }
@@ -30,7 +30,7 @@ function connectDevice(port) {
 function configureDevice(port) {
     console.log(`Configuring device on port: ${port}`);
     alert(`Opening configuration for device on port ${port}...`);
-    
+
     // TODO: Implement configuration modal or redirect
     // Example: window.location.href = `/device/${port}/config`;
 }
@@ -38,7 +38,7 @@ function configureDevice(port) {
 function monitorDevice(port) {
     console.log(`Monitoring device on port: ${port}`);
     alert(`Starting monitoring for device on port ${port}...`);
-    
+
     // TODO: Implement monitoring functionality
     // Example: window.location.href = `/device/${port}/monitor`;
 }
@@ -50,8 +50,8 @@ setInterval(() => {
 }, 10000);
 
 // Initialize tooltips or additional functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('Device list page loaded');
-    
+
     // Add any initialization code here
 });
