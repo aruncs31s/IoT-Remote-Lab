@@ -1,3 +1,14 @@
+// Arduino template code
+const arduinoTemplate = `#include <Arduino.h>
+
+void setup() {
+  // put your setup code here, to run once:
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+}`;
+
 // Initialize CodeMirror
 const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
     mode: 'text/x-c++src',
@@ -16,7 +27,8 @@ const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
         "Ctrl-S": function(cm) {
             saveProgram();
         }
-    }
+    },
+    value: arduinoTemplate
 });
 
 // Elements

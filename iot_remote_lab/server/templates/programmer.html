@@ -1,14 +1,7 @@
-{% extends "base.html" %}
-
-{% block page_title %}💻 C++ Programmer{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block page_title %}<i class="fa-solid fa-terminal"></i> C++ {% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/dracula.min.css">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/programmer.css') }}">
-{% endblock %}
-
-{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/programmer.css') }}"> {% endblock %} {% block content %}
 <div class="programmer-container">
     <div class="status-message" id="status-message">
         <span id="status-text"></span>
@@ -22,10 +15,10 @@
             </div>
             <div class="editor-actions">
                 <button class="btn btn-secondary" id="load-btn">
-                    📂 Load
+                    <i class="fa-solid fa-cloud"></i> Load
                 </button>
                 <button class="btn btn-primary" id="save-btn">
-                    💾 Save Program
+                    <i class="fa-solid fa-sd-card"></i> Save Program
                 </button>
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
@@ -35,31 +28,31 @@
         </div>
 
         <div class="code-editor-container">
-            <textarea id="code-editor" placeholder="// Write your C++ code here...
-#include <Arduino.h>
-
-void setup() {
-    Serial.begin(115200);
-    Serial.println('Hello, ESP32!');
-}
-
-void loop() {
-    // Your main code here
-    delay(1000);
-}"></textarea>
+            <textarea id="code-editor" placeholder="// Write your C++ code here..."></textarea>
+            <!--             <textarea id="code-editor" placeholder="// Write your C++ code here... -->
+            <!--                 #include <Arduino.h> -->
+            <!---->
+            <!--                 void setup() { -->
+            <!--                     Serial.begin(115200); -->
+            <!--                     Serial.println('Hello, ESP32!'); -->
+            <!--                 } -->
+            <!---->
+            <!--                 void loop() { -->
+            <!--                     // Your main code here -->
+            <!--                     delay(1000); -->
+            <!--                 }"> -->
+            <!-- </textarea> -->
         </div>
     </div>
 
     <div class="saved-programs">
-        <h3>📁 Saved Programs</h3>
+        <h3><i class="fa-solid fa-hard-drive"></i> Saved Programs</h3>
         <div class="programs-grid" id="programs-grid">
             <!-- Programs will be loaded here -->
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/clike/clike.min.js"></script>
 <script src="{{ url_for('static', filename='js/programmer.js') }}"></script>

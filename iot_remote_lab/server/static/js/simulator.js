@@ -15,20 +15,20 @@ function toggleSimulator() {
     if (simulatorRunning) {
         statusDot.classList.add('running');
         statusText.textContent = 'Simulator Running';
-        toggleBtn.innerHTML = '⏸️ Stop Simulator';
+        toggleBtn.innerHTML = '<i class="fa-solid fa-circle-stop"></i> Stop Simulator';
         toggleBtn.classList.remove('btn-primary');
         toggleBtn.classList.add('btn-secondary');
-        
+
         addOutput('success', '[INFO] Simulator started');
         addOutput('info', '[DEBUG] ESP32 boot sequence initiated');
         addOutput('info', '[DEBUG] WiFi stack initialized');
     } else {
         statusDot.classList.remove('running');
         statusText.textContent = 'Simulator Stopped';
-        toggleBtn.innerHTML = '▶️ Start Simulator';
+        toggleBtn.innerHTML = '<i class="fa-solid fa-play"></i>  Start Simulator';
         toggleBtn.classList.remove('btn-secondary');
         toggleBtn.classList.add('btn-primary');
-        
+
         addOutput('warning', '[INFO] Simulator stopped');
     }
 }
@@ -41,7 +41,7 @@ function toggleGPIO(pin) {
 
     gpioStates[pin] = !gpioStates[pin];
     const ledElement = document.getElementById(`gpio${pin}LED`);
-    
+
     if (gpioStates[pin]) {
         ledElement.classList.remove('off');
         ledElement.classList.add('on');
@@ -61,7 +61,7 @@ function toggleBuiltinLED() {
 
     gpioStates.builtin = !gpioStates.builtin;
     const ledElement = document.getElementById('builtinLED');
-    
+
     if (gpioStates.builtin) {
         ledElement.classList.remove('off');
         ledElement.classList.add('on');
@@ -94,7 +94,7 @@ function simulateWiFiConnect() {
 
 function updateTemperature(value) {
     document.getElementById('tempValue').textContent = value + '°C';
-    
+
     if (simulatorRunning) {
         addOutput('info', `[SENSOR] Temperature reading: ${value}°C`);
     }
@@ -110,7 +110,7 @@ function sendCommand() {
     if (!command) return;
 
     addOutput('info', `[CMD] > ${command}`);
-    
+
     // Simulate command responses
     setTimeout(() => {
         if (command.toLowerCase().includes('help')) {
@@ -130,7 +130,7 @@ function addOutput(type, message) {
     const line = document.createElement('div');
     line.className = `output-line ${type}`;
     line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-    
+
     output.appendChild(line);
     output.scrollTop = output.scrollHeight;
 }
@@ -153,6 +153,6 @@ function downloadLog() {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     addOutput('info', '[SYSTEM] Simulator interface ready');
 });

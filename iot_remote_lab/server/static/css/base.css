@@ -539,3 +539,9 @@ body {
   margin-right: 8px; /* Adds some space between the icon and the text */
   vertical-align: middle; /* Helps align the icon with the text */
 }
+footer {
+  clear: both;
+  position: relative;
+  height: 200px;
+  margin-top: -200px;
+}
