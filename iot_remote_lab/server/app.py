@@ -107,7 +107,12 @@ def get_devices():
 
         logger.info(f"Returning {len(json_devices)} devices")
         return jsonify(
-            {"success": True, "data": json_devices, "count": len(json_devices)}
+            {
+                "success": True,
+                "data": json_devices,
+                "devices": json_devices,
+                "count": len(json_devices),
+            }
         )
 
     except (DeviceError, PlatformIOError) as e:

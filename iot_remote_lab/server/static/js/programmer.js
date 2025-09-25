@@ -201,9 +201,8 @@ async function loadAvailableDevices() {
 
         const response = await fetch('/api/devices');
         const data = await response.json();
-
-        if (data.success && data.devices.length > 0) {
-            displayDevices(data.devices);
+        if (data.success && data.count > 0) {
+            displayDevices(data.data);
         } else {
             devicesList.innerHTML = `
                 <div style="text-align: center; padding: 2rem; color: var(--ctp-subtext1);">
@@ -233,16 +232,16 @@ async function loadAvailableDevices() {
 
 function displayDevices(devices) {
     devicesList.innerHTML = '';
-    
+
     devices.forEach(device => {
         const deviceItem = document.createElement('div');
         deviceItem.className = 'device-item';
         deviceItem.onclick = () => selectDevice(device, deviceItem);
-        
+
         const statusClass = device.connected ? 'connected' : 'disconnected';
         const statusText = device.connected ? 'Connected' : 'Disconnected';
         const deviceIcon = getDeviceIcon(device.type);
-        
+
         deviceItem.innerHTML = `
             <i class="fa-solid ${deviceIcon}" style="font-size: 1.5rem; color: var(--ctp-mauve);"></i>
             <div class="device-info">
@@ -253,7 +252,7 @@ function displayDevices(devices) {
                 ${statusText}
             </div>
         `;
-        
+
         devicesList.appendChild(deviceItem);
     });
 }
@@ -266,6 +265,12 @@ function getDeviceIcon(deviceType) {
         'raspberry-pi': 'fa-raspberry-pi',
         'unknown': 'fa-usb'
     };
+    
+    // Handle undefined, null, or non-string deviceType
+    if (!deviceType || typeof deviceType !== 'string') {
+        return icons['unknown'];
+    }
+    
     return icons[deviceType.toLowerCase()] || icons['unknown'];
 }
 
@@ -274,7 +279,7 @@ function selectDevice(device, deviceElement) {
     document.querySelectorAll('.device-item').forEach(item => {
         item.classList.remove('selected');
     });
-    
+
     // Select current device
     deviceElement.classList.add('selected');
     selectedDevice = device;
@@ -302,10 +307,10 @@ async function uploadToDevice() {
 
     // Close modal and show upload progress
     closeDeviceModal();
-    
+
     // Show upload status
     showStatus('Uploading to device...', 'info');
-    
+
     try {
         const response = await fetch('/api/upload', {
             method: 'POST',
@@ -324,7 +329,7 @@ async function uploadToDevice() {
 
         if (data.success) {
             showStatus(`Successfully uploaded to ${selectedDevice.name}`, 'success');
-            
+
             // Open serial monitor if requested
             if (monitorSerial.checked && data.monitor_url) {
                 window.open(data.monitor_url, '_blank');

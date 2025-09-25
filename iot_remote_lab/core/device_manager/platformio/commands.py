@@ -40,6 +40,7 @@ class DeviceManager:
                 check=True,
             )
             # Parse JSON output
+
             devices_data = json.loads(result.stdout)
             return devices_data if isinstance(devices_data, list) else [devices_data]
         except subprocess.CalledProcessError as e:
@@ -57,10 +58,10 @@ class DeviceManager:
             return result
 
     def get_devices(self) -> list[Device]:
-
+        if len(self._devices) > 0:
+            self._devices.clear()
         output: list[dict[str, str | int]] = self._get_devices()
-        if len(output) == 0:
-            return self.get_mock_data()
+
         for device_data in output:
             try:
                 # Extract device information from JSON data
@@ -70,10 +71,14 @@ class DeviceManager:
                     # device_data.get("hardware_id", "")
                     device_data.get("hwid", "")
                 )  # PlatformIO might use "hardware_id"
+                if not hwid.strip() or not description.strip() or len(hwid) < 5:
+                    continue
+                    # if not hwid:  # Fallback to other possible keys
+                    # hwid = device_data.get("hwid", "")
 
-                # if not hwid:  # Fallback to other possible keys
-                # hwid = device_data.get("hwid", "")
-
+                # Only append unique devices based on port
+                if any(d.port == port for d in self._devices):
+                    continue
                 self._devices.append(
                     Device(port=port, description=description, hwid=hwid)
                 )
@@ -81,7 +86,7 @@ class DeviceManager:
                 print(f"Error processing device data {device_data}: {e}")
                 continue
 
-        return self.devices
+        return self.devices if len(self.devices) > 0 else self.get_mock_data()
 
     def get_mock_data(self) -> list[Device]:
         devices: list[Device] = []
@@ -166,5 +171,8 @@ if __name__ == "__main__":
     device_manager = DeviceManager()
 
     output = device_manager.get_devices()
+    if len(output) == 0:
+        output = device_manager.get_mock_data()
+
     print("PlatformIO Device List Output:")
     print(output)
