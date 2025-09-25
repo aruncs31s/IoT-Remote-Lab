@@ -5,9 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}IoT Remote Lab{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
-    
-    {% block extra_css %}
-    {% endblock %}
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <style>
+            
+    /* Footer Styles */
+    .footer {
+        background: var(--ctp-mantle);
+        color: var(--ctp-text);
+        padding: 20px 0;
+        text-align: center;
+        margin-top: 40px;
+        border-top: 1px solid var(--ctp-surface0);
+    }
+
+    .footer-content p {
+        text-align: center;
+        margin: 5px 0;
+        font-size: 1rem;
+    }
+
+    .footer-content a {
+        color: var(--ctp-blue);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-content a:hover {
+        color: var(--ctp-mauve);
+        text-decoration: underline;
+    }
+    </style>
 
     {% block extra_head %}{% endblock %}
 </head>
@@ -17,7 +44,8 @@
         <nav class="navbar">
             <div class="nav-container">
                 <a href="{{ url_for('home') }}" class="nav-brand">
-                    <span class="nav-brand-icon">🌸</span>
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon">
+                    <!-- <span class="nav-brand-icon">🌸</span> -->
                     IoT Remote Lab
                 </a>
                 
@@ -66,6 +94,13 @@
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 IoT Remote Lab. Built with Flask and Catppuccin.</p>
+            <p><a href="https://github.com/aruncs31s/IoT-Remote-Lab" target="_blank">View on GitHub</a></p>
+        </div>
+    </footer>
+
     {% block scripts %}{% endblock %}
     
     <!-- Navigation Toggle Script -->
@@ -88,4 +123,5 @@
         }
     </script>
 </body>
+
 </html>

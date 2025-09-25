@@ -28,6 +28,7 @@
     --ctp-crust: #11111b;
 }
 
+
 * {
     margin: 0;
     padding: 0;
@@ -74,10 +75,7 @@ body {
     font-weight: 700;
 }
 
-.nav-brand-icon {
-    margin-right: 10px;
-    font-size: 1.5rem;
-}
+
 
 .nav-menu {
     display: flex;
@@ -524,4 +522,11 @@ body {
     background: var(--ctp-mauve) !important;
     color: var(--ctp-crust) !important;
     opacity: 0.9;
+}
+
+
+.nav-brand-icon {
+  width: 2rem; /* Adjust this value to make it smaller or larger */
+  margin-right: 8px; /* Adds some space between the icon and the text */
+  vertical-align: middle; /* Helps align the icon with the text */
 }
