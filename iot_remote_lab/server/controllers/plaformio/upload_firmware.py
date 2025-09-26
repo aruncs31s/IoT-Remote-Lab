@@ -22,6 +22,10 @@ def upload_firmware(data: dict[str, any], dmg: DeviceManager) -> tuple[str, int,
     # TODO: make sure that we get the same device object
 
     device_obj = dmg.get_device_by_port(port.strip())
+    """Change device_obj status to USING"""
+    """Check if this works"""
+    device_obj.status = device_obj.status.USING
+
     print("device obj is", device_obj, " ids", id(device_obj))
 
     path = os.path.join(os.getcwd(), "programs", program_name)

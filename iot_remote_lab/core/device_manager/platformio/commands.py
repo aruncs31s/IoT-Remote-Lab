@@ -157,6 +157,10 @@ class DeviceManager:
         return proc.returncode == 0, ""
 
     def get_device_by_port(self, port: str) -> Device:
+        for device in self.get_devices():
+            print(
+                f"Device available: {id(device)} \nPORT: {device.port},\nDESC: {device.description},\nID: {device.hwid},\nNAME: {device.status.name}"
+            )
         for device in self.devices:
             if device.port.lower().strip() == port.lower().strip():
                 print(f"Found device on port {port}: {device}")
