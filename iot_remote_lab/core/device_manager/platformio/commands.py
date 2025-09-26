@@ -6,6 +6,7 @@ try:
 except ImportError:
     from .model import Device, DeviceState
 
+import time
 
 """ Singleton class to manage devices using PlatformIO commands """
 
@@ -22,6 +23,7 @@ class DeviceManager:
         if not hasattr(self, "_initialized"):
             self._initialized = True
         self._devices: list[Device] = []
+        self._mock_devices: list[Device] = []
 
     @property
     def devices(self) -> list[Device]:
@@ -31,7 +33,7 @@ class DeviceManager:
     def devices(self, value: list[Device]):
         self._devices = value
 
-    def _get_devices(self) -> list[dict[str, str | int]]:
+    def _get_connected_devices(self) -> list[dict[str, str | int]]:
         try:
             result = subprocess.run(
                 ["platformio", "device", "list", "--json-output"],
@@ -39,8 +41,8 @@ class DeviceManager:
                 text=True,
                 check=True,
             )
-            # Parse JSON output
 
+            # Parse JSON output
             devices_data = json.loads(result.stdout)
             return devices_data if isinstance(devices_data, list) else [devices_data]
         except subprocess.CalledProcessError as e:
@@ -60,22 +62,16 @@ class DeviceManager:
     def get_devices(self) -> list[Device]:
         if len(self._devices) > 0:
             self._devices.clear()
-        output: list[dict[str, str | int]] = self._get_devices()
+        output: list[dict[str, str | int]] = self._get_connected_devices()
 
         for device_data in output:
             try:
                 # Extract device information from JSON data
                 port: str = str(device_data.get("port", ""))
                 description: str = str(device_data.get("description", ""))
-                hwid: str = str(
-                    # device_data.get("hardware_id", "")
-                    device_data.get("hwid", "")
-                )  # PlatformIO might use "hardware_id"
+                hwid: str = str(device_data.get("hwid", ""))
                 if not hwid.strip() or not description.strip() or len(hwid) < 5:
                     continue
-                    # if not hwid:  # Fallback to other possible keys
-                    # hwid = device_data.get("hwid", "")
-
                 # Only append unique devices based on port
                 if any(d.port == port for d in self._devices):
                     continue
@@ -89,7 +85,9 @@ class DeviceManager:
         return self.devices if len(self.devices) > 0 else self.get_mock_data()
 
     def get_mock_data(self) -> list[Device]:
-        devices: list[Device] = []
+        if len(self._mock_devices) > 0:
+            return self._mock_devices
+
         device_1 = Device(
             port="COM3",
             description="USB Serial Device",
@@ -101,14 +99,16 @@ class DeviceManager:
             hwid="USB VID:PID=0403:6001 SER=67890 LOCATION",
         )
         device_3 = Device(
-            port="COM3",
+            port="COM4",
             description="USB Serial Device",
             hwid="USB VID:PID=2341:0043 SER=12345 LOCATION",
         )
-        devices.append(device_1)
-        devices.append(device_2)
-        devices.append(device_3)
-        return devices
+        self._mock_devices.append(device_1)
+        self._mock_devices.append(device_2)
+        self._mock_devices.append(device_3)
+        if len(self.devices) == 0:
+            self.devices = self._mock_devices
+        return self._mock_devices
 
     def get_free_devices(self) -> list[Device]:
         return [
@@ -128,7 +128,7 @@ class DeviceManager:
         ]
 
     def upload_firmware(
-        self, env: str, port: str, build_path: str, device: Device
+        self, env: str, build_path: str, device: Device
     ) -> tuple[bool, str]:
         if device.status != DeviceState.CONNECTED:
             return False, "device is not connected"
@@ -136,35 +136,37 @@ class DeviceManager:
             return False, "device is busy"
         if device.status == DeviceState.MONITORING:
             return False, "device is monitoring"
+        # port = device.port
 
-        try:
-            result = subprocess.run(
-                [
-                    "platformio",
-                    "run",
-                    # "-e",
-                    # env,
-                    "--target",
-                    "upload",
-                    f"--upload-port={port}",
-                    f"--project-dir={build_path}",
-                ],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            print(result.stdout)
-            return True, ""
-        except subprocess.CalledProcessError as e:
-            print(f"Error executing PlatformIO upload command: {e}")
-            print(e.stdout)
-            print(e.stderr)
-            return False, ""
-        except FileNotFoundError:
-            return (
-                False,
-                "PlatformIO not found. Please ensure PlatformIO is installed and in PATH.",
-            )
+        # Set status to busy
+        device.status = DeviceState.BUSY
+
+        proc = subprocess.Popen(
+            ["platformio", "run", f"--project-dir={build_path}"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+
+        # check in a loop
+        while proc.poll() is None:  # poll() returns None if still running
+            device.status = DeviceState.BUSY
+            time.sleep(1)
+        device.status = DeviceState.USING
+        print("Process ended with code:", proc.returncode)
+        return proc.returncode == 0, ""
+
+    def get_device_by_port(self, port: str) -> Device:
+        for device in self.devices:
+            if device.port.lower().strip() == port.lower().strip():
+                print(f"Found device on port {port}: {device}")
+                return device
+        return Device(
+            port="N/A",
+            description="No Device",
+            hwid="N/A",
+            # status=DeviceState.DISCONNECTED,
+        )
 
 
 if __name__ == "__main__":
@@ -175,4 +177,7 @@ if __name__ == "__main__":
         output = device_manager.get_mock_data()
 
     print("PlatformIO Device List Output:")
-    print(output)
+    for device in output:
+        print(
+            f"Device on port: {device.port}, Description: {device.description}, HWID: {device.hwid}, Status: {device.status.name}"
+        )

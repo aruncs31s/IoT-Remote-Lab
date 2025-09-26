@@ -4,10 +4,18 @@ from enum import Enum
 
 
 class DeviceState(Enum):
+    """When the device is just connected"""
+
     CONNECTED = "connected"
+    """When a user is using the device"""
+    USING = "using"
+    """When the device is disconnected"""
     DISCONNECTED = "disconnected"
+    """When the device is in unknown state"""
     UNKNOWN = "unknown"
+    """When the device is busy doing something"""
     BUSY = "busy"
+    """When the user is monitoring serial output"""
     MONITORING = "monitoring"
 
 

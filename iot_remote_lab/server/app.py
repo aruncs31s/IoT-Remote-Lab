@@ -61,6 +61,7 @@ def home():
         # devices: list[Device] = device_list()
         """For Now using mock data"""
         devices: list[Device] = dmg.get_mock_data()
+        print("devices ", devices)
         return render_template("home.html", devices=devices)
 
     except (DeviceError, PlatformIOError) as e:
@@ -181,66 +182,6 @@ def programmer():
 @app.route("/api/save_program", methods=["POST"])
 def save_program():
     return save_program_to_file(logger)
-    # """Save C++ program to file system"""
-    # import json
-    # import os
-    # from datetime import datetime
-    #
-    # try:
-    #     data = request.get_json()
-    #     program_name = data.get("program_name", "").strip()
-    #     code = data.get("code", "")
-    #
-    #     if not program_name:
-    #         return jsonify({"success": False, "error": "Program name is required"}), 400
-    #
-    #     if not code.strip():
-    #         return jsonify({"success": False, "error": "Code cannot be empty"}), 400
-    #
-    #     # Create programs directory if it doesn't exist
-    #     programs_dir = os.path.join(os.getcwd(), "programs")
-    #     if not os.path.exists(programs_dir):
-    #         os.makedirs(programs_dir)
-    #
-    #     # Create program-specific folder
-    #     program_folder = os.path.join(programs_dir, program_name)
-    #     if not os.path.exists(program_folder):
-    #         os.makedirs(program_folder)
-    #
-    #     # Save main.cpp file
-    #     cpp_file_path = os.path.join(program_folder, "main.cpp")
-    #     with open(cpp_file_path, "w", encoding="utf-8") as f:
-    #         f.write(code)
-    #
-    #     # Create metadata file
-    #     metadata = {
-    #         "program_name": program_name,
-    #         "created_at": datetime.now().isoformat(),
-    #         "file_path": cpp_file_path,
-    #         "description": data.get("description", ""),
-    #     }
-    #
-    #     metadata_file_path = os.path.join(program_folder, "metadata.json")
-    #     with open(metadata_file_path, "w", encoding="utf-8") as f:
-    #         json.dump(metadata, f, indent=2)
-    #
-    #     logger.info(f"Program '{program_name}' saved successfully to {program_folder}")
-    #
-    #     return jsonify(
-    #         {
-    #             "success": True,
-    #             "message": f'Program "{program_name}" saved successfully',
-    #             "file_path": cpp_file_path,
-    #             "folder_path": program_folder,
-    #         }
-    #     )
-    #
-    # except Exception as e:
-    #     logger.error(f"Error saving program: {str(e)}")
-    #     return (
-    #         jsonify({"success": False, "error": f"Failed to save program: {str(e)}"}),
-    #         500,
-    #     )
 
 
 @app.route("/api/load_program/<program_name>")
@@ -270,13 +211,55 @@ def upload_firmware():
     """Upload firmware to a device"""
     # try:
     data = request.get_json()
-    device_id = data.get("device")
-    program_name = data.get("program_name")
-    print(f"Received upload request for device {device_id} with program {program_name}")
+    device: dict[str, str] = data.get("device", {})
+    if not device or "port" not in device:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "error": "Device information with valid port is required",
+                    "type": "invalid_device",
+                }
+            ),
+            400,
+        )
+
+    program_name: str = data.get("program_name")
+    port: str = device.get("port").strip()
+    print("device is", port)
+    device_obj = dmg.get_device_by_port(port.strip())
+    print("device obj is", device_obj, " ids", id(device_obj))
+
+    path = os.path.join(os.getcwd(), "programs", program_name)
+    if not os.path.exists(path):
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "error": f"Program {program_name} does not exist",
+                    "type": "program_not_found",
+                }
+            ),
+            404,
+        )
+    status, err = dmg.upload_firmware(device=device_obj, build_path=path, env="")
+    if err != "" or not status:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "error": err,
+                    "type": "upload_error",
+                }
+            ),
+            500,
+        )
+    print(status, err)
+    print("path is", path)
     return jsonify(
         {
-            "success": True,
-            "message": f"Firmware upload to device {device_id} with program {program_name} initiated",
+            "success": status,
+            "message": f"Firmware upload {device} with program {program_name} initiated",
         }
     )
 

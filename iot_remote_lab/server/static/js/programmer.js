@@ -186,7 +186,7 @@ function openDeviceModal() {
 
 function closeDeviceModal() {
     deviceModal.classList.remove('show');
-    selectedDevice = null;
+    // selectedDevice = null;
     confirmUpload.disabled = true;
 }
 
@@ -296,6 +296,7 @@ function selectDevice(device, deviceElement) {
     // Select current device
     deviceElement.classList.add('selected');
     selectedDevice = device;
+    // console.log('Selected device:', selectedDevice);
     confirmUpload.disabled = false;
 }
 
@@ -323,6 +324,7 @@ async function uploadToDevice() {
 
     // Show upload status
     showStatus('Uploading to device...', 'info');
+
 
     try {
         const response = await fetch('/api/upload_firmware', {
