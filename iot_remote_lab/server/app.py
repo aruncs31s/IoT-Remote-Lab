@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask, jsonify, render_template, request
 
 # from controllers.platformio_helper import device_list
@@ -38,14 +40,17 @@ app.config.from_object(config)
 dmg = DeviceManager()
 
 # Serve static files in development
-if app.config.get("ENV") != "production":
-    import os
-
-    from werkzeug.middleware.shared_data import SharedDataMiddleware
-
-    app.wsgi_app = SharedDataMiddleware(
-        app.wsgi_app, {"/static": os.path.join(os.path.dirname(__file__), "static")}
-    )
+# if app.config.get("ENV") != "production":
+#     import os
+#
+#     from werkzeug.middleware.shared_data import SharedDataMiddleware
+#
+#     app.wsgi_app = SharedDataMiddleware(
+#         app.wsgi_app, {"/static": os.path.join(os.path.dirname(__file__), "static")}
+#     )
+#
+""" Pages """
+from .pages.home import home_page
 
 
 @app.route("/healthz")
@@ -56,22 +61,10 @@ def healthz():
 @app.route("/")
 def home():
     """Home page displaying ESP devices"""
-    try:
-        logger.info("Loading home page with device list")
-        # devices: list[Device] = device_list()
-        """For Now using mock data"""
-        devices: list[Device] = dmg.get_mock_data()
-        print("devices ", devices)
-        return render_template("home.html", devices=devices)
-
-    except (DeviceError, PlatformIOError) as e:
-        logger.error(f"Device error on home page: {str(e)}")
-        return render_template("home.html", devices=[], error=str(e))
-
-    except Exception as e:
-        logger.error(f"Unexpected error on home page: {str(e)}")
-        # Fall back to the main home template to avoid TemplateNotFound
-        return render_template("home.html", devices=[], error="Failed to load devices")
+    devices, err = home_page(logger, dmg)
+    if err != "":
+        return render_template("home.html", devices=[], error=err)
+    return render_template("home.html", devices=devices)
 
 
 @app.route("/new")
@@ -179,6 +172,20 @@ def programmer():
         return render_template("programmer.html", error="Failed to load programmer")
 
 
+@app.route("/serial-monitor")
+def serial_monitor():
+    """Serial Monitor page"""
+    try:
+        logger.info("Loading serial monitor page")
+        return render_template("serial_monitor.html")
+
+    except Exception as e:
+        logger.error(f"Unexpected error on serial monitor page: {str(e)}")
+        return render_template(
+            "serial_monitor.html", error="Failed to load serial monitor"
+        )
+
+
 @app.route("/api/save_program", methods=["POST"])
 def save_program():
     return save_program_to_file(logger)
@@ -262,6 +269,113 @@ def upload_firmware():
             "message": f"Firmware upload {device} with program {program_name} initiated",
         }
     )
+
+
+# Serial Monitor API endpoints
+@app.route("/api/serial/connect", methods=["POST"])
+def serial_connect():
+    """Connect to a device for serial monitoring"""
+    try:
+        data = request.get_json()
+        device_data = data.get("device")
+        baud_rate = data.get("baud_rate", 115200)
+
+        if not device_data:
+            return (
+                jsonify({"success": False, "error": "Device information is required"}),
+                400,
+            )
+
+        # Here you would implement actual serial connection logic
+        # For now, return a mock success response
+        logger.info(
+            f"Serial connect request for device: {device_data.get('name', 'Unknown')}"
+        )
+
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "message": f"Connected to {device_data.get('name', 'device')}",
+                    "session_id": "mock_session_123",  # Generate actual session ID
+                }
+            ),
+            200,
+        )
+
+    except Exception as e:
+        logger.error(f"Serial connect error: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to connect to device"}), 500
+
+
+@app.route("/api/serial/disconnect", methods=["POST"])
+def serial_disconnect():
+    """Disconnect from serial device"""
+    try:
+        data = request.get_json()
+        device_data = data.get("device")
+
+        logger.info(
+            f"Serial disconnect request for device: {device_data.get('name', 'Unknown') if device_data else 'Unknown'}"
+        )
+
+        # Here you would implement actual disconnection logic
+
+        return jsonify({"success": True, "message": "Disconnected from device"}), 200
+
+    except Exception as e:
+        logger.error(f"Serial disconnect error: {str(e)}")
+        return (
+            jsonify({"success": False, "error": "Failed to disconnect from device"}),
+            500,
+        )
+
+
+@app.route("/api/serial/send", methods=["POST"])
+def serial_send():
+    """Send data to serial device"""
+    try:
+        data = request.get_json()
+        device_data = data.get("device")
+        serial_data = data.get("data")
+
+        if not serial_data:
+            return jsonify({"success": False, "error": "Data is required"}), 400
+
+        logger.info(f"Serial send request: {len(serial_data)} bytes")
+
+        # Here you would implement actual data sending logic
+
+        return jsonify({"success": True, "message": "Data sent successfully"}), 200
+
+    except Exception as e:
+        logger.error(f"Serial send error: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to send data"}), 500
+
+
+@app.route("/api/serial/baud_rate", methods=["POST"])
+def serial_baud_rate():
+    """Update baud rate for serial connection"""
+    try:
+        data = request.get_json()
+        device_data = data.get("device")
+        baud_rate = data.get("baud_rate")
+
+        if not baud_rate:
+            return jsonify({"success": False, "error": "Baud rate is required"}), 400
+
+        logger.info(f"Serial baud rate update request: {baud_rate}")
+
+        # Here you would implement actual baud rate update logic
+
+        return (
+            jsonify({"success": True, "message": f"Baud rate updated to {baud_rate}"}),
+            200,
+        )
+
+    except Exception as e:
+        logger.error(f"Serial baud rate error: {str(e)}")
+        return jsonify({"success": False, "error": "Failed to update baud rate"}), 500
 
 
 @app.errorhandler(404)

@@ -8,11 +8,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
-    {% block extra_css %}
-    {% endblock %}
+    /> {% block extra_css %} {% endblock %}
     <style>
         /* Footer Styles */
+        
         .footer {
             clear: both;
             position: relative;
@@ -53,8 +52,7 @@
         <nav class="navbar">
             <div class="nav-container">
                 <a href="{{ url_for('home') }}" class="nav-brand">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon">
-                    IoT Remote Lab
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon"> IoT Remote Lab
                 </a>
 
                 <ul class="nav-menu" id="nav-menu">
@@ -78,6 +76,11 @@
                             <i class="fa-solid fa-code"></i> Programmer
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('serial_monitor') }}" class="nav-link {% if request.endpoint == 'serial_monitor' %}active{% endif %}">
+                            <i class="fa-solid fa-terminal"></i> Serial Monitor
+                        </a>
+                    </li>
                 </ul>
 
                 <button class="nav-toggle" id="nav-toggle">
@@ -87,8 +90,7 @@
         </nav>
 
         <div class="header">
-            <h1>{% block page_title %}<img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon">
- IoT Remote Lab{% endblock %}</h1>
+            <h1>{% block page_title %}<img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon"> IoT Remote Lab{% endblock %}</h1>
             <p>{% block page_subtitle %}IoT Remote Lab{% endblock %}</p>
         </div>
 

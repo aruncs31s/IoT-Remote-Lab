@@ -1,0 +1,154 @@
+{% extends "base.html" %} {% block page_title %}<i class="fa-solid fa-terminal"></i> Serial Monitor{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/serial_monitor.css') }}"> {% endblock %} {% block content %}
+<div class="serial-monitor-container">
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="connection-status" id="connection-status">
+            <div class="status-indicator" id="status-indicator"></div>
+            <span id="status-text">Disconnected</span>
+        </div>
+        <div class="device-info" id="device-info">
+            <span id="device-name">No device selected</span>
+        </div>
+        <div class="monitor-controls">
+            <button class="btn btn-primary" id="connect-btn">
+                <i class="fa-solid fa-plug"></i> Connect
+            </button>
+            <button class="btn btn-secondary" id="disconnect-btn" disabled>
+                <i class="fa-solid fa-unlink"></i> Disconnect
+            </button>
+            <button class="btn btn-secondary" id="clear-btn">
+                <i class="fa-solid fa-trash"></i> Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Monitor Area -->
+    <div class="monitor-content">
+        <!-- Device Selection Panel (shown when not connected) -->
+        <div class="device-selection-panel" id="device-selection-panel">
+            <div class="panel-header">
+                <h3><i class="fa-solid fa-microchip"></i> Select Device</h3>
+                <button class="btn btn-secondary btn-sm" id="refresh-devices">
+                    <i class="fa-solid fa-refresh"></i> Refresh
+                </button>
+            </div>
+            <div class="devices-list" id="devices-list">
+                <div class="loading-devices">
+                    <div class="spinner"></div>
+                    <span>Loading devices...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Serial Output Area -->
+        <div class="serial-output-container" id="serial-output-container">
+            <div class="output-header">
+                <div class="output-controls">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="auto-scroll" checked>
+                        <i class="fa-solid fa-arrow-down"></i> Auto-scroll
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="timestamp" checked>
+                        <i class="fa-solid fa-clock"></i> Timestamps
+                    </label>
+                    <div class="baud-rate-selector">
+                        <label for="baud-rate">Baud Rate:</label>
+                        <select id="baud-rate">
+                            <option value="9600">9600</option>
+                            <option value="19200">19200</option>
+                            <option value="38400">38400</option>
+                            <option value="57600">57600</option>
+                            <option value="115200" selected>115200</option>
+                            <option value="230400">230400</option>
+                            <option value="460800">460800</option>
+                            <option value="921600">921600</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="serial-output" id="serial-output">
+                <div class="welcome-message">
+                    <i class="fa-solid fa-terminal"></i>
+                    <h3>Serial Monitor</h3>
+                    <p>Connect to a device to start monitoring serial output</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Serial Input Area -->
+        <div class="serial-input-container" id="serial-input-container">
+            <div class="input-controls">
+                <div class="line-ending-selector">
+                    <label for="line-ending">Line Ending:</label>
+                    <select id="line-ending">
+                        <option value="none">No line ending</option>
+                        <option value="cr">Carriage return (CR)</option>
+                        <option value="lf" selected>Line feed (LF)</option>
+                        <option value="crlf">Both CR & LF</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="serial-input" placeholder="Type command and press Enter or click Send..." disabled>
+                <button class="btn btn-primary" id="send-btn" disabled>
+                    <i class="fa-solid fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Panel -->
+    <div class="stats-panel" id="stats-panel">
+        <div class="stat-item">
+            <span class="stat-label">Bytes Received:</span>
+            <span class="stat-value" id="bytes-received">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Bytes Sent:</span>
+            <span class="stat-value" id="bytes-sent">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Lines:</span>
+            <span class="stat-value" id="lines-count">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Connected Time:</span>
+            <span class="stat-value" id="connected-time">00:00:00</span>
+        </div>
+    </div>
+</div>
+
+<!-- Device Selection Modal -->
+<div id="device-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-microchip"></i> Select Device</h3>
+            <span class="close-modal" id="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="device-selection">
+                <p>Choose a device to connect to:</p>
+                <div class="modal-devices-list" id="modal-devices-list">
+                    <div class="loading-devices">
+                        <div class="spinner"></div>
+                        <span>Loading devices...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancel-connect">
+                <i class="fa-solid fa-times"></i> Cancel
+            </button>
+            <button class="btn btn-primary" id="confirm-connect" disabled>
+                <i class="fa-solid fa-plug"></i> Connect to Device
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/serial_monitor.js') }}"></script>
+{% endblock %}
