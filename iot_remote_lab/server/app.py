@@ -50,7 +50,7 @@ dmg = DeviceManager()
 #     )
 #
 """ Pages """
-from .pages.home import home_page
+from .routes import device_list, home_page
 
 
 @app.route("/healthz")
@@ -65,25 +65,6 @@ def home():
     if err != "":
         return render_template("home.html", devices=[], error=err)
     return render_template("home.html", devices=devices)
-
-
-@app.route("/new")
-def new_home():
-    try:
-        logger.info("Loading home page with device list")
-        # devices: list[Device] = device_list()
-        """For Now using mock data"""
-        devices: list[Device] = dmg.get_mock_data()
-        return render_template("home.html", devices=devices)
-
-    except (DeviceError, PlatformIOError) as e:
-        logger.error(f"Device error on home page: {str(e)}")
-        return render_template("home.html", devices=[], error=str(e))
-
-    except Exception as e:
-        logger.error(f"Unexpected error on home page: {str(e)}")
-        # Fall back to the main home template to avoid TemplateNotFound
-        return render_template("home.html", devices=[], error="Failed to load devices")
 
 
 @app.route("/api/devices", methods=["GET"])
@@ -130,22 +111,10 @@ def get_devices():
 @app.route("/devices")
 def device_list_page():
     """Device list page"""
-    try:
-        logger.info("Loading device list page")
-        # devices: list[Device] = device_list()
-        """For Now using mock data"""
-        devices: list[Device] = dmg.get_mock_data()
-        return render_template("device_list.html", devices=devices)
-
-    except (DeviceError, PlatformIOError) as e:
-        logger.error(f"Device error on device list page: {str(e)}")
-        return render_template("device_list.html", devices=[], error=str(e))
-
-    except Exception as e:
-        logger.error(f"Unexpected error on device list page: {str(e)}")
-        return render_template(
-            "device_list.html", devices=[], error="Failed to load devices"
-        )
+    devices, err = device_list(logger, dmg)
+    if err != "":
+        return render_template("device_list.html", devices=[], error=err)
+    return render_template("device_list.html", devices=devices)
 
 
 @app.route("/simulator")
