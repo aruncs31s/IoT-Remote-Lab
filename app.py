@@ -1,4 +1,4 @@
-from iot_remote_lab.server.app import app
+from iot_remote_lab.server.app import main
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    main()

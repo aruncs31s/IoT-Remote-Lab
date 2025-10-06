@@ -8,7 +8,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    /> {% block extra_css %} {% endblock %}
+    /> 
+    {% block extra_css %} 
+    {% endblock %}
     <style>
         /* Footer Styles */
         
@@ -51,33 +53,33 @@
         <!-- Navigation Bar -->
         <nav class="navbar">
             <div class="nav-container">
-                <a href="{{ url_for('home') }}" class="nav-brand">
+                <a href="{{ url_for('pages.home') }}" class="nav-brand">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon"> IoT Remote Lab
                 </a>
 
                 <ul class="nav-menu" id="nav-menu">
                     <li class="nav-item">
-                        <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">
+                        <a href="{{ url_for('pages.home') }}" class="nav-link {% if request.endpoint == 'pages.home' %}active{% endif %}">
                             <i class="fa-solid fa-house-chimney"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url_for('device_list_page') }}" class="nav-link {% if request.endpoint == 'device_list_page' %}active{% endif %}">
+                        <a href="{{ url_for('pages.device_list_page') }}" class="nav-link {% if request.endpoint == 'pages.device_list_page' %}active{% endif %}">
                             <i class="fa-solid fa-mobile"></i> Device List
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url_for('simulator') }}" class="nav-link {% if request.endpoint == 'simulator' %}active{% endif %}">
+                        <a href="{{ url_for('pages.simulator') }}" class="nav-link {% if request.endpoint == 'pages.simulator' %}active{% endif %}">
                             <i class="fa-solid fa-code-commit"></i> Simulator
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url_for('programmer') }}" class="nav-link {% if request.endpoint == 'programmer' %}active{% endif %}">
+                        <a href="{{ url_for('pages.programmer') }}" class="nav-link {% if request.endpoint == 'pages.programmer' %}active{% endif %}">
                             <i class="fa-solid fa-code"></i> Programmer
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url_for('serial_monitor') }}" class="nav-link {% if request.endpoint == 'serial_monitor' %}active{% endif %}">
+                        <a href="{{ url_for('pages.serial_monitor') }}" class="nav-link {% if request.endpoint == 'pages.serial_monitor' %}active{% endif %}">
                             <i class="fa-solid fa-terminal"></i> Serial Monitor
                         </a>
                     </li>
