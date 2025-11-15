@@ -1,140 +1,242 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}IoT Remote Lab 1{% endblock %}</title>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='css/base.css') }}"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            href="{{ url_for('static', filename='images/logo.png') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+            integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        {% block extra_css %} {% endblock %}
+        <style>
+            /* Footer Styles */
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}IoT Remote Lab 1{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    /> 
-    {% block extra_css %} 
-    {% endblock %}
-    <style>
-        /* Footer Styles */
-        
-        .footer {
-            clear: both;
-            position: relative;
-            height: 200px;
-            margin-top: -200px;
-            background: var(--ctp-mantle);
-            color: var(--ctp-text);
-            padding: 20px 0;
-            text-align: center;
-            margin-top: 40px;
-            border-top: 1px solid var(--ctp-surface0);
-        }
-        
-        .footer-content p {
-            text-align: center;
-            margin: 5px 0;
-            font-size: 1rem;
-        }
-        
-        .footer-content a {
-            color: var(--ctp-blue);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-content a:hover {
-            color: var(--ctp-mauve);
-            text-decoration: underline;
-        }
-    </style>
+            .footer {
+                clear: both;
+                position: relative;
+                height: 200px;
+                margin-top: -200px;
+                background: var(--ctp-mantle);
+                color: var(--ctp-text);
+                padding: 20px 0;
+                text-align: center;
+                margin-top: 40px;
+                border-top: 1px solid var(--ctp-surface0);
+            }
 
-    {% block extra_head %}{% endblock %}
-</head>
+            .footer-content p {
+                text-align: center;
+                margin: 5px 0;
+                font-size: 1rem;
+            }
 
-<body>
-    <div class="container">
-        <!-- Navigation Bar -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <a href="{{ url_for('pages.home') }}" class="nav-brand">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon"> IoT Remote Lab
-                </a>
+            .footer-content a {
+                color: var(--ctp-blue);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
 
-                <ul class="nav-menu" id="nav-menu">
-                    <li class="nav-item">
-                        <a href="{{ url_for('pages.home') }}" class="nav-link {% if request.endpoint == 'pages.home' %}active{% endif %}">
-                            <i class="fa-solid fa-house-chimney"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('pages.device_list_page') }}" class="nav-link {% if request.endpoint == 'pages.device_list_page' %}active{% endif %}">
-                            <i class="fa-solid fa-mobile"></i> Device List
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('pages.simulator') }}" class="nav-link {% if request.endpoint == 'pages.simulator' %}active{% endif %}">
-                            <i class="fa-solid fa-code-commit"></i> Simulator
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('pages.programmer') }}" class="nav-link {% if request.endpoint == 'pages.programmer' %}active{% endif %}">
-                            <i class="fa-solid fa-code"></i> Programmer
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('pages.serial_monitor') }}" class="nav-link {% if request.endpoint == 'pages.serial_monitor' %}active{% endif %}">
-                            <i class="fa-solid fa-terminal"></i> Serial Monitor
-                        </a>
-                    </li>
-                </ul>
+            .footer-content a:hover {
+                color: var(--ctp-mauve);
+                text-decoration: underline;
+            }
 
-                <button class="nav-toggle" id="nav-toggle">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+            /* Theme Toggle Button */
+            .theme-toggle-btn {
+                background: none;
+                border: none;
+                color: var(--ctp-text);
+                font-size: 1.5rem;
+                cursor: pointer;
+                padding: 5px;
+                transition: all 0.3s ease;
+                margin-left: 15px;
+            }
+
+            .theme-toggle-btn:hover {
+                color: var(--ctp-mauve);
+                transform: scale(1.1);
+            }
+        </style>
+
+        {% block extra_head %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="container">
+            <!-- Navigation Bar -->
+            <nav class="navbar">
+                <div class="nav-container">
+                    <a href="{{ url_for('pages.home') }}" class="nav-brand">
+                        <img
+                            src="{{ url_for('static', filename='images/logo.png') }}"
+                            id="the_image"
+                            class="nav-brand-icon"
+                            alt="Icon"
+                        />
+                        IoT Remote Lab
+                    </a>
+
+                    <ul class="nav-menu" id="nav-menu">
+                        <li class="nav-item">
+                            <a
+                                href="{{ url_for('pages.home') }}"
+                                class="nav-link {% if request.endpoint == 'pages.home' %}active{% endif %}"
+                            >
+                                <i class="fa-solid fa-house-chimney"></i> Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                href="{{ url_for('pages.device_list_page') }}"
+                                class="nav-link {% if request.endpoint == 'pages.device_list_page' %}active{% endif %}"
+                            >
+                                <i class="fa-solid fa-mobile"></i> Device List
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                href="{{ url_for('pages.simulator') }}"
+                                class="nav-link {% if request.endpoint == 'pages.simulator' %}active{% endif %}"
+                            >
+                                <i class="fa-solid fa-code-commit"></i>
+                                Simulator
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                href="{{ url_for('pages.programmer') }}"
+                                class="nav-link {% if request.endpoint == 'pages.programmer' %}active{% endif %}"
+                            >
+                                <i class="fa-solid fa-code"></i> Programmer
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                href="{{ url_for('pages.serial_monitor') }}"
+                                class="nav-link {% if request.endpoint == 'pages.serial_monitor' %}active{% endif %}"
+                            >
+                                <i class="fa-solid fa-terminal"></i> Serial
+                                Monitor
+                            </a>
+                        </li>
+                    </ul>
+
+                    <button class="nav-toggle" id="nav-toggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <button
+                        id="theme-toggle"
+                        class="theme-toggle-btn"
+                        title="Toggle Theme"
+                    >
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </nav>
+
+            <div class="header">
+                <h1>
+                    {% block page_title %}<img
+                        src="{{ url_for('static', filename='images/logo.png') }}"
+                        id="the_image"
+                        class="nav-brand-icon"
+                        alt="Icon"
+                    />
+                    IoT Remote Lab{% endblock %}
+                </h1>
+                <p>{% block page_subtitle %}IoT Remote Lab{% endblock %}</p>
             </div>
-        </nav>
 
-        <div class="header">
-            <h1>{% block page_title %}<img src="{{ url_for('static', filename='images/logo.png') }}" id="the_image" class="nav-brand-icon" alt="Icon"> IoT Remote Lab{% endblock %}</h1>
-            <p>{% block page_subtitle %}IoT Remote Lab{% endblock %}</p>
-        </div>
-
-        <div class="main-content">
-            {% block content %}
-            <div class="empty-state">
-                <div class="empty-state-icon">🔌</div>
-                <h3>Welcome to IoT Remote Lab</h3>
-                <p>This is the base template. Please extend it with your content.</p>
+            <div class="main-content">
+                {% block content %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fa-solid fa-plug"></i>
+                    </div>
+                    <h3>Welcome to IoT Remote Lab</h3>
+                    <p>
+                        This is the base template. Please extend it with your
+                        content.
+                    </p>
+                </div>
+                {% endblock %}
             </div>
-            {% endblock %}
         </div>
-    </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2025 IoT Remote Lab.</p>
-            <p><a href="https://github.com/aruncs31s/IoT-Remote-Lab" target="_blank">View on GitHub</a></p>
-        </div>
-    </footer>
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 IoT Remote Lab.</p>
+                <p>
+                    <a
+                        href="https://github.com/aruncs31s/IoT-Remote-Lab"
+                        target="_blank"
+                        >View on GitHub</a
+                    >
+                </p>
+            </div>
+        </footer>
 
-    {% block scripts %}{% endblock %}
+        {% block scripts %}{% endblock %}
 
-    <!-- Navigation Toggle Script -->
-    <script>
-        // Mobile navigation toggle
-        const navToggle = document.getElementById('nav-toggle');
-        const navMenu = document.getElementById('nav-menu');
+        <!-- Navigation Toggle Script -->
+        <script>
+            // Mobile navigation toggle
+            const navToggle = document.getElementById("nav-toggle");
+            const navMenu = document.getElementById("nav-menu");
 
-        if (navToggle && navMenu) {
-            navToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
+            if (navToggle && navMenu) {
+                navToggle.addEventListener("click", () => {
+                    navMenu.classList.toggle("active");
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener("click", (e) => {
+                    if (
+                        !navToggle.contains(e.target) &&
+                        !navMenu.contains(e.target)
+                    ) {
+                        navMenu.classList.remove("active");
+                    }
+                });
+            }
+
+            // Theme toggle
+            const themeToggle = document.getElementById("theme-toggle");
+            const body = document.body;
+            const currentTheme = localStorage.getItem("theme") || "dark";
+            body.setAttribute("data-theme", currentTheme);
+            themeToggle.innerHTML =
+                currentTheme === "dark"
+                    ? '<i class="fa-solid fa-moon"></i>'
+                    : '<i class="fa-solid fa-sun"></i>';
+
+            themeToggle.addEventListener("click", () => {
+                const newTheme =
+                    body.getAttribute("data-theme") === "dark"
+                        ? "light"
+                        : "dark";
+                body.setAttribute("data-theme", newTheme);
+                localStorage.setItem("theme", newTheme);
+                themeToggle.innerHTML =
+                    newTheme === "dark"
+                        ? '<i class="fa-solid fa-moon"></i>'
+                        : '<i class="fa-solid fa-sun"></i>';
             });
-
-            // Close mobile menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                    navMenu.classList.remove('active');
-                }
-            });
-        }
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>

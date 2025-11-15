@@ -5,6 +5,75 @@
     gap: 20px;
 }
 
+/* Responsive grid for devices */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .devices-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 15px;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .devices-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+/* Introductory Section Styles */
+.intro-section {
+    background: var(--ctp-surface0);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid var(--ctp-surface2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.intro-section h2 {
+    color: var(--ctp-text);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.intro-section p {
+    color: var(--ctp-subtext1);
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.intro-section ul {
+    color: var(--ctp-subtext1);
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.intro-section li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.intro-section li strong {
+    color: var(--ctp-text);
+}
+
+/* Responsive intro section */
+@media (max-width: 768px) {
+    .intro-section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .intro-section h2 {
+        font-size: 1.3rem;
+    }
+
+    .intro-section ul {
+        margin-left: 15px;
+    }
+}
+
 .device-info h3 {
     color: var(--ctp-text);
     margin-bottom: 15px;

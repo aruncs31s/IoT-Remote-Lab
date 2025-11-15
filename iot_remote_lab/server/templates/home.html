@@ -1,88 +1,130 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}IoT Remote Lab{% endblock %} {% block
+page_title %} <i class="fa-solid fa-house-chimney"></i> IoT Remote Lab{%
+endblock %} {% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/home.css') }}"
+/>
+{% endblock %} {% block content %} {% if error %}
+<div class="alert-error"><strong>Error:</strong> {{ error }}</div>
+{% endif %}
 
-{% block title %}IoT Remote Lab{% endblock %}
+<!-- Introductory Section -->
+<div class="intro-section">
+    <h2>Welcome to IoT Remote Lab</h2>
+    <p>
+        IoT Remote Lab is a powerful web-based platform designed for remote
+        programming, monitoring, and management of ESP32 and ESP8266 IoT
+        devices. Whether you're a student, educator, or developer, this tool
+        allows you to:
+    </p>
+    <ul>
+        <li>
+            <strong>Connect Devices:</strong> Easily detect and connect to ESP
+            devices via USB
+        </li>
+        <li>
+            <strong>Program Remotely:</strong> Upload Arduino code to your
+            devices without physical access
+        </li>
+        <li>
+            <strong>Monitor in Real-Time:</strong> View serial output and device
+            status instantly
+        </li>
+        <li>
+            <strong>Simulate Projects:</strong> Test your IoT ideas in a virtual
+            environment
+        </li>
+        <li>
+            <strong>Manage Multiple Devices:</strong> Handle several ESP devices
+            from one interface
+        </li>
+    </ul>
+    <p>Get started by connecting your ESP device and exploring the features!</p>
+</div>
 
-{% block page_title %} <i class="fa-solid fa-house-chimney"></i> IoT Remote Lab{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-{% endblock %}
-
-
-
-{% block content %}
-    {% if error %}
-    <div class="alert-error">
-        <strong>Error:</strong> {{ error }}
+<div class="section-header">
+    <h2>Connected ESP Devices</h2>
+    <div style="display: flex; gap: 15px; align-items: center">
+        <span class="count-badge">{{ devices|length }} device(s) found</span>
+        <button class="refresh-btn" onclick="location.reload()">
+            <i class="fa-solid fa-arrows-rotate"> </i>
+            Refresh
+        </button>
     </div>
-    {% endif %}
+</div>
 
-    <div class="section-header">
-        <h2>Connected ESP Devices</h2>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <span class="count-badge">{{ devices|length }} device(s) found</span>
-            <button class="refresh-btn" onclick="location.reload()">
-                <i class="fa-solid fa-arrows-rotate">
-                </i>
-                Refresh
-            </button>
-        </div>
-    </div>
-
-    {% if devices %}
-    <div class="devices-grid">
-        {% for device in devices %}
-        <div class="card device-card" onclick="selectDevice('{{ device.port }}', '{{ device.description }}', '{{ device.hwid }}')">
-            <div class="device-info">
-                <h3 class="card-title">
-                    <div class="device-icon card-icon">ESP</div>
-                    ESP Device
-                </h3>
-                <div class="device-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Port:</span>
-                        <span class="detail-value">{{ device.port }}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Description:</span>
-                        <span class="detail-value">{{ device.description }}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Hardware ID:</span>
-                        <span class="detail-value">{{ device.hwid }}</span>
-                    </div>
+{% if devices %}
+<div class="devices-grid">
+    {% for device in devices %}
+    <div
+        class="card device-card"
+        onclick="selectDevice('{{ device.port }}', '{{ device.description }}', '{{ device.hwid }}')"
+    >
+        <div class="device-info">
+            <h3 class="card-title">
+                <div class="device-icon card-icon">ESP</div>
+                ESP Device
+            </h3>
+            <div class="device-details">
+                <div class="detail-row">
+                    <span class="detail-label">Port:</span>
+                    <span class="detail-value">{{ device.port }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Description:</span>
+                    <span class="detail-value">{{ device.description }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Hardware ID:</span>
+                    <span class="detail-value">{{ device.hwid }}</span>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
+</div>
 
-    <div class="alert-success" id="selectedDeviceInfo">
-        <strong>Selected Device:</strong>
-        <div id="selectedDeviceDetails"></div>
+<div class="alert-success" id="selectedDeviceInfo">
+    <strong>Selected Device:</strong>
+    <div id="selectedDeviceDetails"></div>
+</div>
+
+<div class="action-buttons">
+    <button
+        class="btn btn-primary"
+        id="connectBtn"
+        disabled
+        onclick="connectToDevice()"
+    >
+        <i class="fa-brands fa-usb"></i> Connect to Device
+    </button>
+    <button
+        class="btn btn-secondary"
+        id="monitorBtn"
+        disabled
+        onclick="monitorDevice()"
+    >
+        <i class="fa-solid fa-vial-virus"></i> Monitor Device
+    </button>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i class="fa-solid fa-plug"></i>
     </div>
-
-    <div class="action-buttons">
-        <button class="btn btn-primary" id="connectBtn" disabled onclick="connectToDevice()">
-            <i class="fa-brands fa-usb"></i> Connect to Device
+    <h3>No ESP devices detected</h3>
+    <p>
+        Make sure your ESP device is connected via USB and the drivers are
+        installed.
+    </p>
+    <p style="margin-top: 10px">
+        <button class="refresh-btn" onclick="location.reload()">
+            <i class="fa-solid fa-arrows-rotate"></i> Try Again
         </button>
-        <button class="btn btn-secondary" id="monitorBtn" disabled onclick="monitorDevice()">
-            <i class="fa-solid fa-vial-virus"></i> Monitor Device
-        </button>
-    </div>
-
-    {% else %}
-    <div class="empty-state">
-        <div class="empty-state-icon">🔌</div>
-        <h3>No ESP devices detected</h3>
-        <p>Make sure your ESP device is connected via USB and the drivers are installed.</p>
-        <p style="margin-top: 10px;">
-            <button class="refresh-btn" onclick="location.reload()">🔄 Try Again</button>
-        </p>
-    </div>
-    {% endif %}
-{% endblock %}
-
-{% block scripts %}
+    </p>
+</div>
+{% endif %} {% endblock %} {% block scripts %}
 <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 {% endblock %}

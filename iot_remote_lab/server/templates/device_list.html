@@ -1,144 +1,165 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Device List - IoT Remote Lab{%
+endblock %} {% block page_title %}<i class="fa-solid fa-mobile"></i>Device
+Management{% endblock %} {% block page_subtitle %}Manage and Configure Your ESP
+Devices{% endblock %} {% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/deviceList.css') }}"
+/>
+{% endblock %} {% block content %} {% if error %}
+<div class="alert-error"><strong>Error:</strong> {{ error }}</div>
+{% endif %}
 
-{% block title %}Device List - IoT Remote Lab{% endblock %}
-
-{% block page_title %}<i class="fa-solid fa-mobile"></i>Device Management{% endblock %}
-{% block page_subtitle %}Manage and Configure Your ESP Devices{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/deviceList.css') }}"> {% endblock %}
-
-{% block content %}
-    {% if error %}
-    <div class="alert-error">
-        <strong>Error:</strong> {{ error }}
-    </div>
-    {% endif %}
-
-    <div class="section-header">
-        <h2>Device List</h2>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <span class="count-badge">{{ devices|length }} device(s) found</span>
-            <button class="refresh-btn" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Refresh</button>
-        </div>
-    </div>
-
-    <!-- View Toggle -->
-    <div class="view-toggle">
-        <button class="toggle-btn active" id="cardViewBtn" onclick="switchView('card')">
-            <i class="fa-solid fa-credit-card"></i> Card View
-        </button>
-        <button class="toggle-btn" id="tableViewBtn" onclick="switchView('table')">
-            <i class="fa-solid fa-table-list"></i> Table View
+<div class="section-header">
+    <h2>Device List</h2>
+    <div style="display: flex; gap: 15px; align-items: center">
+        <span class="count-badge">{{ devices|length }} device(s) found</span>
+        <button class="refresh-btn" onclick="location.reload()">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh
         </button>
     </div>
+</div>
 
-    {% if devices %}
-    
-    <!-- Card View -->
-    <div id="cardView" class="card-grid">
-        {% for device in devices %}
-        <div class="card device-card" data-device-id="{{ device.port }}">
-            <div class="status-indicator connected"></div>
-            
-            <div class="card-title">
-                <div class="card-icon">ESP</div>
-                ESP Device - {{ device.port }}
-            </div>
-            
-            <div class="detail-row">
-                <span class="detail-label">Status:</span>
-                <span class="device-status status-connected">Connected</span>
-            </div>
-            
-            <div class="detail-row">
-                <span class="detail-label">Port:</span>
-                <span class="detail-value">{{ device.port }}</span>
-            </div>
-            
-            <div class="detail-row">
-                <span class="detail-label">Description:</span>
-                <span class="detail-value">{{ device.description }}</span>
-            </div>
-            
-            <div class="detail-row">
-                <span class="detail-label">Hardware ID:</span>
-                <span class="detail-value">{{ device.hwid }}</span>
-            </div>
-            
-            <div class="device-actions">
-                <button class="btn btn-primary btn-small" onclick="connectDevice('{{ device.port }}')">
-                    <i class="fa-solid fa-plug"></i> Connect
-                </button>
-                <button class="btn btn-secondary btn-small" onclick="configureDevice('{{ device.port }}')">
-                    <i class="fa-solid fa-gear"></i> Configure
-                </button>
-                <button class="btn btn-secondary btn-small" onclick="monitorDevice('{{ device.port }}')">
-                    <i class="fa-solid fa-desktop"></i> Monitor
-                </button>
-            </div>
+<!-- View Toggle -->
+<div class="view-toggle">
+    <button
+        class="toggle-btn active"
+        id="cardViewBtn"
+        onclick="switchView('card')"
+    >
+        <i class="fa-solid fa-credit-card"></i> Card View
+    </button>
+    <button class="toggle-btn" id="tableViewBtn" onclick="switchView('table')">
+        <i class="fa-solid fa-table-list"></i> Table View
+    </button>
+</div>
+
+{% if devices %}
+
+<!-- Card View -->
+<div id="cardView" class="card-grid">
+    {% for device in devices %}
+    <div class="card device-card" data-device-id="{{ device.port }}">
+        <div class="status-indicator connected"></div>
+
+        <div class="card-title">
+            <div class="card-icon">ESP</div>
+            ESP Device - {{ device.port }}
         </div>
-        {% endfor %}
-    </div>
 
-    <!-- Table View -->
-    <div id="tableView" style="display: none;">
-        <table class="device-table">
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Port</th>
-                    <th>Description</th>
-                    <th>Hardware ID</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for device in devices %}
-                <tr data-device-id="{{ device.port }}">
-                    <td>
-                        <span class="device-status status-connected">Connected</span>
-                    </td>
-                    <td>
-                        <code class="detail-value">{{ device.port }}</code>
-                    </td>
-                    <td>{{ device.description }}</td>
-                    <td>
-                        <code class="detail-value">{{ device.hwid }}</code>
-                    </td>
-                    <td>
-                        <div class="device-actions">
-                            <button class="btn btn-primary btn-small" onclick="connectDevice('{{ device.port }}')">
-                                <i class="fa-solid fa-satellite-dish"></i> Connect
-                            </button>
-                            <button class="btn btn-secondary btn-small" onclick="configureDevice('{{ device.port }}')">
-                                <i class="fa-solid fa-gear"></i> Configure
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="device-status status-connected">Connected</span>
+        </div>
 
-    {% else %}
-    <div class="empty-state">
-        <div class="empty-state-icon">🔌</div>
-        <h3>No ESP devices detected</h3>
-        <p>Make sure your ESP devices are connected via USB and the drivers are installed.</p>
-        <p style="margin-top: 15px;">
-            <button class="refresh-btn" onclick="location.reload()">🔄 Scan for Devices</button>
-        </p>
-    </div>
-    {% endif %}
+        <div class="detail-row">
+            <span class="detail-label">Port:</span>
+            <span class="detail-value">{{ device.port }}</span>
+        </div>
 
-    <!-- Device Actions Modal Placeholder -->
-    <div id="deviceModal" style="display: none;">
-        <!-- Modal content will be added here -->
-    </div>
-{% endblock %}
+        <div class="detail-row">
+            <span class="detail-label">Description:</span>
+            <span class="detail-value">{{ device.description }}</span>
+        </div>
 
-{% block scripts %}
+        <div class="detail-row">
+            <span class="detail-label">Hardware ID:</span>
+            <span class="detail-value">{{ device.hwid }}</span>
+        </div>
+
+        <div class="device-actions">
+            <button
+                class="btn btn-primary btn-small"
+                onclick="connectDevice('{{ device.port }}')"
+            >
+                <i class="fa-solid fa-plug"></i> Connect
+            </button>
+            <button
+                class="btn btn-secondary btn-small"
+                onclick="configureDevice('{{ device.port }}')"
+            >
+                <i class="fa-solid fa-gear"></i> Configure
+            </button>
+            <button
+                class="btn btn-secondary btn-small"
+                onclick="monitorDevice('{{ device.port }}')"
+            >
+                <i class="fa-solid fa-desktop"></i> Monitor
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Table View -->
+<div id="tableView" style="display: none">
+    <table class="device-table">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Port</th>
+                <th>Description</th>
+                <th>Hardware ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr data-device-id="{{ device.port }}">
+                <td>
+                    <span class="device-status status-connected"
+                        >Connected</span
+                    >
+                </td>
+                <td>
+                    <code class="detail-value">{{ device.port }}</code>
+                </td>
+                <td>{{ device.description }}</td>
+                <td>
+                    <code class="detail-value">{{ device.hwid }}</code>
+                </td>
+                <td>
+                    <div class="device-actions">
+                        <button
+                            class="btn btn-primary btn-small"
+                            onclick="connectDevice('{{ device.port }}')"
+                        >
+                            <i class="fa-solid fa-plug"></i> Connect
+                        </button>
+                        <button
+                            class="btn btn-secondary btn-small"
+                            onclick="configureDevice('{{ device.port }}')"
+                        >
+                            <i class="fa-solid fa-gear"></i> Configure
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon"><i class="fa-solid fa-plug"></i></div>
+    <h3>No ESP devices detected</h3>
+    <p>
+        Make sure your ESP devices are connected via USB and the drivers are
+        installed.
+    </p>
+    <p style="margin-top: 15px">
+        <button class="refresh-btn" onclick="location.reload()">
+            <i class="fa-solid fa-arrows-rotate"></i> Scan for Devices
+        </button>
+    </p>
+</div>
+{% endif %}
+
+<!-- Device Actions Modal Placeholder -->
+<div id="deviceModal" style="display: none">
+    <!-- Modal content will be added here -->
+</div>
+{% endblock %} {% block scripts %}
 <script src="{{ url_for('static', filename='js/device_list.js') }}"></script>
 {% endblock %}

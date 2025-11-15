@@ -45,7 +45,7 @@
     background: var(--ctp-surface0);
     border-radius: 8px;
     padding: 15px;
-    font-family: 'JetBrains Mono', 'Monaco', monospace;
+    font-family: "JetBrains Mono", "Monaco", monospace;
     font-size: 0.85rem;
     color: var(--ctp-text);
     border: 1px solid var(--ctp-surface2);
@@ -145,4 +145,82 @@
 
 .led-indicator.off {
     background: var(--ctp-surface2);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .simulator-panel {
+        padding: 15px;
+    }
+
+    .simulator-controls {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .control-group {
+        padding: 12px;
+    }
+
+    .simulator-output {
+        height: 250px;
+        padding: 12px;
+    }
+
+    .virtual-device {
+        padding: 15px;
+    }
+
+    .device-display {
+        padding: 15px;
+        min-height: 80px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .simulator-panel {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .simulator-controls {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .control-group {
+        padding: 12px;
+    }
+
+    .control-group h4 {
+        font-size: 0.95rem;
+    }
+
+    .simulator-output {
+        height: 200px;
+        padding: 12px;
+        font-size: 0.8rem;
+    }
+
+    .simulator-status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .virtual-device {
+        padding: 15px;
+    }
+
+    .device-display {
+        padding: 15px;
+        min-height: 80px;
+        font-size: 1rem;
+    }
+
+    .led-indicator {
+        width: 18px;
+        height: 18px;
+    }
 }
